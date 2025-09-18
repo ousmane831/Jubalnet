@@ -1,0 +1,177 @@
+[
+  {
+    "model": "categories.crimecategory",
+    "pk": 1,
+    "fields": {
+      "name_fr": "Harcèlement",
+      "name_wo": "Harcèlement",
+      "description_fr": "Harcèlement moral, sexuel, au travail ou en ligne",
+      "description_wo": "Harcèlement moral, sexual, ci liggéey walla ci internet",
+      "priority_level": "high",
+      "color": "#EF4444",
+      "icon": "UserX",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 2,
+    "fields": {
+      "name_fr": "Usurpation d'identité",
+      "name_wo": "Fekkante identité",
+      "description_fr": "Vol d'identité, faux documents, fraude à l'identité",
+      "description_wo": "Sàcc identité, dokimaan yu wóor, njoloor ci identité",
+      "priority_level": "high",
+      "color": "#DC2626",
+      "icon": "Shield",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 3,
+    "fields": {
+      "name_fr": "Blanchiment de capitaux",
+      "name_wo": "Blanchiment bu xaalis",
+      "description_fr": "Blanchiment d'argent, financement illégal, transactions suspectes",
+      "description_wo": "Blanchiment bu xaalis, financement bu dëggu, transaction yu jafe",
+      "priority_level": "high",
+      "color": "#B91C1C",
+      "icon": "DollarSign",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 4,
+    "fields": {
+      "name_fr": "Corruption",
+      "name_wo": "Sëpp",
+      "description_fr": "Pot-de-vin, détournement de fonds publics, abus de pouvoir",
+      "description_wo": "Njoloor ñi ci pouvoirs yi, feek xaalis yu reew mi",
+      "priority_level": "high",
+      "color": "#991B1B",
+      "icon": "AlertTriangle",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 5,
+    "fields": {
+      "name_fr": "Vol et Cambriolage",
+      "name_wo": "Sàcc ak Këru Kër",
+      "description_fr": "Vol à main armée, cambriolage, pickpocket",
+      "description_wo": "Sàcc ak mbàmm, këru kër, sàcc ci poket",
+      "priority_level": "medium",
+      "color": "#EA580C",
+      "icon": "Home",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 6,
+    "fields": {
+      "name_fr": "Violence et Agression",
+      "name_wo": "Fit ak Njëbul",
+      "description_fr": "Agression physique, violence conjugale, harcèlement",
+      "description_wo": "Fit ci yaram, fit ci biir kër, harcèlement",
+      "priority_level": "urgent",
+      "color": "#DC2626",
+      "icon": "UserX",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 7,
+    "fields": {
+      "name_fr": "Autres",
+      "name_wo": "Yeneen",
+      "description_fr": "Autres crimes non listés ci-dessus - à préciser",
+      "description_wo": "Yeneen njub yi amul ci kaw yi - wara ko ñakk",
+      "priority_level": "medium",
+      "color": "#6B7280",
+      "icon": "MoreHorizontal",
+      "requires_specification": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "accounts.emergencycontact",
+    "pk": 1,
+    "fields": {
+      "name_fr": "Police Nationale",
+      "name_wo": "Police bu Reew mi",
+      "phone_number": "17",
+      "department": "police",
+      "description_fr": "Pour tous les crimes et délits urgents",
+      "description_wo": "Ngir njub yu ëpp yi caxaan",
+      "is_active": true,
+      "sort_order": 1
+    }
+  },
+  {
+    "model": "accounts.emergencycontact",
+    "pk": 2,
+    "fields": {
+      "name_fr": "Gendarmerie Nationale",
+      "name_wo": "Gendarmerie bu Reew mi",
+      "phone_number": "18",
+      "department": "gendarmerie",
+      "description_fr": "Forces de sécurité en zone rurale et périurbaine",
+      "description_wo": "Sécurité ci njëkke décku ak njëkke daaj",
+      "is_active": true,
+      "sort_order": 2
+    }
+  },
+  {
+    "model": "accounts.emergencycontact",
+    "pk": 3,
+    "fields": {
+      "name_fr": "Pompiers",
+      "name_wo": "Pompiers",
+      "phone_number": "18",
+      "department": "firefighters",
+      "description_fr": "Urgences médicales et incendies",
+      "description_wo": "Caxaan bu yaram ak safaara",
+      "is_active": true,
+      "sort_order": 3
+    }
+  },
+  {
+    "model": "accounts.emergencycontact",
+    "pk": 4,
+    "fields": {
+      "name_fr": "Cellule Anti-Cybercriminalité",
+      "name_wo": "Cellule Anti-Cybercriminalité",
+      "phone_number": "+221 33 823 71 49",
+      "department": "cybercrime",
+      "description_fr": "Spécialisée dans les crimes informatiques",
+      "description_wo": "Spécialisée ci njub yu ordinateur",
+      "is_active": true,
+      "sort_order": 4
+    }
+  },
+  {
+    "model": "accounts.emergencycontact",
+    "pk": 5,
+    "fields": {
+      "name_fr": "Ligne Verte Anti-Corruption",
+      "name_wo": "Nimero Werte Anti-Sëpp",
+      "phone_number": "800 00 80 80",
+      "department": "anticorruption",
+      "description_fr": "Dénonciation de la corruption et malversations",
+      "description_wo": "Baxal sëpp ak feek",
+      "is_active": true,
+      "sort_order": 5
+    }
+  }
+]
