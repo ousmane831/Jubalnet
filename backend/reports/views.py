@@ -11,6 +11,7 @@ from .serializers import (
     CrimeReportListSerializer,
     ReportStatusSerializer
 )
+from django.contrib.auth import get_user_model
 
 class CrimeReportListCreateView(generics.ListCreateAPIView):
     serializer_class = CrimeReportListSerializer
@@ -111,7 +112,8 @@ def report_statistics(request):
     in_progress_reports = CrimeReport.objects.filter(
         status__in=['reviewing', 'investigating']
     ).count()
-    
+    User = get_user_model()
+    total_users = User.objects.count()
     # Statistics by category
     from categories.models import CrimeCategory
     category_stats = []
@@ -126,6 +128,7 @@ def report_statistics(request):
         'total_reports': total_reports,
         'resolved_reports': resolved_reports,
         'in_progress_reports': in_progress_reports,
-        'category_statistics': category_stats
+        'category_statistics': category_stats,
+        'total_users': total_users,
     })
     

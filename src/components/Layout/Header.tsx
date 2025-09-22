@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
+import logo from "../../assets/jubbalnet.jpg";
 
 interface HeaderProps {
   currentPage: string;
@@ -43,18 +44,13 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-2 rounded-lg">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-gray-900">
-                {language === 'fr' ? 'Dénonciation SN' : 'Baxal SN'}
-              </h1>
-              <p className="text-xs text-gray-600">
-                {language === 'fr' ? 'République du Sénégal' : 'Réewum Senegaal'}
-              </p>
-            </div>
-          </div>
+          <img 
+            src={logo} 
+            alt="logo_jubbalnet" 
+            className="h-44 w-44 object-contain" // 👈 taille fixe, s’adapte bien
+          />
+          <span className="hidden sm:inline text-xl font-bold text-gray-800">Jubbalnet</span>
+        </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-1">
@@ -66,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                   onClick={() => onPageChange(item.id)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentPage === item.id
-                      ? 'bg-blue-100 text-blue-700'
+                      ? 'bg-green-100 text-green-700'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >

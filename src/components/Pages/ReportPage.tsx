@@ -2,23 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   FileText, 
   Mic, 
-  MicOff, 
   Upload, 
   MapPin, 
-  Calendar,
-  Clock,
   Shield,
-  Camera,
   Paperclip,
   Play,
   Pause,
   Square,
   RefreshCw,
   Send,
-  AlertTriangle,
-  CheckCircle,
-  Eye,
-  EyeOff
+  CheckCircle
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';

@@ -3,20 +3,15 @@ import {
   Shield, 
   AlertTriangle, 
   Eye, 
-  Lock, 
   Smartphone, 
-  CreditCard,
   Users,
   Home,
   Car,
-  Globe,
   Phone,
   BookOpen,
   Download,
-  Play,
-  ExternalLink,
   ChevronRight,
-  CheckCircle
+
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -88,187 +83,245 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
 
   const preventionContent = {
     harassment: {
-      tips: [
-        {
-          title: language === 'fr' ? 'Reconnaître le harcèlement' : 'Xam harcèlement bi',
-          content: language === 'fr' 
-            ? 'Comportements répétés, intimidation, menaces, commentaires déplacés, isolement.'
-            : 'Jëf yu dellu-dellu, xeex, menaces, wax yu bon, isolation.',
-          icon: AlertTriangle
-        },
-        {
-          title: language === 'fr' ? 'Comment réagir' : 'Na ngeen jëf',
-          content: language === 'fr' 
-            ? 'Documentez les incidents, parlez-en à quelqu\'un de confiance, signalez aux autorités.'
-            : 'Bind xeey yi, wax ak kenn nga yàgg, baxal ci autorités yi.',
-          icon: Shield
-        },
-        {
-          title: language === 'fr' ? 'Soutien disponible' : 'Ndimbalante am',
-          content: language === 'fr' 
-            ? 'Lignes d\'écoute, associations, services juridiques, accompagnement psychologique.'
-            : 'Ligne yu déggal, associations, services juridiques, ndimbalante psychologique.',
-          icon: Users
-        }
-      ],
-      resources: [
-        { title: 'Guide Anti-Harcèlement PDF', type: 'pdf', size: '2.1 MB' },
-        { title: 'Vidéo: Que faire face au harcèlement', type: 'video', duration: '6:45' },
-        { title: 'Numéros d\'aide', type: 'contacts', items: 8 }
-      ]
+  tips: [
+    {
+      title: language === 'fr' ? 'Reconnaître le harcèlement' : 'Xam harcèlement bi',
+      content: language === 'fr' 
+        ? 'Comportements répétés, intimidation, menaces, commentaires déplacés, isolement.'
+        : 'Jëf yu dellu-dellu, xeex, menaces, wax yu bon, isolation.',
+      icon: AlertTriangle
     },
-    identity_theft: {
-      tips: [
-        {
-          title: language === 'fr' ? 'Protéger ses documents' : 'Jëkk sa dokimaan yi',
-          content: language === 'fr' 
-            ? 'Ne laissez jamais vos papiers d\'identité sans surveillance. Photocopiez-les et gardez les originaux en sécurité.'
-            : 'Joxe kenn sa dokimaan yi ci benn bër. Def copies yi te dëkk originaux yi ci sécurité.',
-          icon: Shield
-        },
-        {
-          title: language === 'fr' ? 'Vigilance en ligne' : 'Tàngal ci internet',
-          content: language === 'fr' 
-            ? 'Ne partagez jamais vos informations personnelles sur les réseaux sociaux ou sites non sécurisés.'
-            : 'Joxe kenn sa xibaar yu kenn ci réseaux sociaux walla sites yu amul sécurité.',
-          icon: Eye
-        },
-        {
-          title: language === 'fr' ? 'Signaler rapidement' : 'Baxal ci gaaw',
-          content: language === 'fr' 
-            ? 'En cas d\'usurpation, contactez immédiatement la police et vos banques.'
-            : 'Su fekkee usurpation, jokkoo police ak sa banques yi ci gaaw.',
-          icon: Phone
-        }
-      ],
-      resources: [
-        { title: 'Guide Protection Identité', type: 'pdf', size: '1.8 MB' },
-        { title: 'Démarches en cas de vol', type: 'checklist', items: 10 },
-        { title: 'Contacts Urgents', type: 'contacts', items: 6 }
-      ]
+    {
+      title: language === 'fr' ? 'Comment réagir' : 'Na ngeen jëf',
+      content: language === 'fr' 
+        ? 'Documentez les incidents, parlez-en à quelqu\'un de confiance, signalez aux autorités.'
+        : 'Bind xeey yi, wax ak kenn nga yàgg, baxal ci autorités yi.',
+      icon: Shield
     },
-    money_laundering: {
-      tips: [
-        {
-          title: language === 'fr' ? 'Reconnaître le blanchiment' : 'Xam blanchiment bi',
-          content: language === 'fr' 
-            ? 'Transactions suspectes, montants inhabituels, sources de revenus floues.'
-            : 'Transaction yu jafe, xaalis yu dëggu, sources revenus yu jafe.',
-          icon: AlertTriangle
-        },
-        {
-          title: language === 'fr' ? 'Signaler les activités suspectes' : 'Baxal jëf yu jafe',
-          content: language === 'fr' 
-            ? 'Contactez les autorités financières ou utilisez notre plateforme pour signaler.'
-            : 'Jokkoo autorités yu xaalis walla jëfandikoo nun la platform bi ngir baxal.',
-          icon: Shield
-        },
-        {
-          title: language === 'fr' ? 'Protection personnelle' : 'Jëkk sa bopp',
-          content: language === 'fr' 
-            ? 'Ne participez jamais à des transactions douteuses, même si on vous propose de l\'argent.'
-            : 'Joxe kenn bokk ci transaction yu jafe, ndax su la leen xaalis.',
-          icon: Users
-        }
-      ],
-      resources: [
-        { title: 'Guide Anti-Blanchiment', type: 'pdf', size: '2.3 MB' },
-        { title: 'Signaux d\'alerte', type: 'checklist', items: 12 },
-        { title: 'Contacts CENTIF', type: 'contacts', items: 4 }
-      ]
-    },
-    corruption: {
-      tips: [
-        {
-          title: language === 'fr' ? 'Reconnaître la corruption' : 'Xam sëpp bi',
-          content: language === 'fr' 
-            ? 'Demande d\'argent pour un service public, favoritisme, détournement de fonds.'
-            : 'Laaj xaalis ngir service bu reew mi, favoritisme, feek xaalis yu reew mi.',
-          icon: AlertTriangle
-        },
-        {
-          title: language === 'fr' ? 'Vos droits' : 'Sa jëf',
-          content: language === 'fr' 
-            ? 'Vous avez le droit de refuser de payer des pots-de-vin. Les services publics sont gratuits.'
-            : 'Am nga jëf u nees fey pot-de-vin. Services yu reew mi ñu ngi ligeey.'
-          ,
-          icon: Shield
-        },
-        {
-          title: language === 'fr' ? 'Comment signaler' : 'Na ngeen baxal',
-          content: language === 'fr' 
-            ? 'Utilisez notre plateforme ou la ligne verte anti-corruption: 800 00 80 80'
-            : 'Jëfandikoo nun la platform bi walla ligne verte anti-corruption: 800 00 80 80',
-          icon: Phone
-        }
-      ],
-      resources: [
-        { title: 'Loi Anti-Corruption', type: 'pdf', size: '1.8 MB' },
-        { title: 'Numéros utiles', type: 'contacts', items: 8 },
-        { title: 'Témoignages', type: 'video', duration: '8:15' }
-      ]
-    },
-    theft: {
-      tips: [
-        {
-          title: language === 'fr' ? 'Sécuriser son domicile' : 'Jëkk sa kër',
-          content: language === 'fr' 
-            ? 'Installez des serrures solides, éclairage extérieur et système d\'alarme si possible.'
-            : 'Doxal serrures yu gëna, éclairage bu bëj kër gi ak système d\'alarme su mën.',
-          icon: Home
-        },
-        {
-          title: language === 'fr' ? 'En déplacement' : 'Bu dem',
-          content: language === 'fr' 
-            ? 'Ne montrez pas vos objets de valeur. Restez vigilant dans les transports en commun.'
-            : 'Wontu sa alal yu bari. Tàngal ci transport en commun.',
-          icon: Car
-        },
-        {
-          title: language === 'fr' ? 'Téléphone portable' : 'Téléphone portable',
-          content: language === 'fr' 
-            ? 'Notez votre numéro IMEI. Activez le verrouillage automatique et la géolocalisation.'
-            : 'Bind sa nimero IMEI. Doxal verrouillage otomatik ak géolocalisation.',
-          icon: Smartphone
-        }
-      ],
-      resources: [
-        { title: 'Guide Sécurité Domicile', type: 'pdf', size: '3.1 MB' },
-        { title: 'Checklist Voyage', type: 'checklist', items: 15 },
-        { title: 'Assurance Habitation', type: 'info', pages: 4 }
-      ]
-    },
-    violence: {
-      tips: [
-        {
-          title: language === 'fr' ? 'Signaux d\'alarme' : 'Signaux d\'alarme',
-          content: language === 'fr' 
-            ? 'Menaces, isolement, contrôle excessif, violence physique ou psychologique.'
-            : 'Menaces, isolation, contrôle bu bari, fit ci yaram walla ci xel.',
-          icon: AlertTriangle
-        },
-        {
-          title: language === 'fr' ? 'Demander de l\'aide' : 'Laaj ndimbalante',
-          content: language === 'fr' 
-            ? 'Contactez le 3919 (violences femmes), police (17) ou nos services confidentiels.'
-            : 'Jokkoo 3919 (fit ci jigéen yi), police (17) walla nun la services yu sutura.',
-          icon: Phone
-        },
-        {
-          title: language === 'fr' ? 'Soutenir une victime' : 'Dimbalante ab victim',
-          content: language === 'fr' 
-            ? 'Écoutez sans juger, encouragez à chercher de l\'aide professionnelle.'
-            : 'Déggal bu amul jugement, yàgg ko ngir wut ndimbalante bu professionnel.',
-          icon: Users
-        }
-      ],
-      resources: [
-        { title: 'Guide Violences Conjugales', type: 'pdf', size: '2.7 MB' },
-        { title: 'Centres d\'Accueil', type: 'contacts', items: 12 },
-        { title: 'Aide Psychologique', type: 'info', pages: 6 }
-      ]
+    {
+      title: language === 'fr' ? 'Soutien disponible' : 'Ndimbalante am',
+      content: language === 'fr' 
+        ? 'Lignes d\'écoute, associations, services juridiques, accompagnement psychologique.'
+        : 'Ligne yu déggal, associations, services juridiques, ndimbalante psychologique.',
+      icon: Users
     }
-  };
+  ],
+  laws: [
+    {
+      title: language === 'fr' 
+        ? 'Article 319 bis - Harcèlement sexuel' 
+        : 'Article 319 bis - Harcèlement sexuel',
+      content: language === 'fr'
+        ? `Le fait de harceler autrui en usant d'ordres, de gestes, de menaces, de paroles,
+        d'écrits ou de contraintes dans le but d'obtenir des faveurs de nature sexuelle, 
+        par une personne abusant de l'autorité que lui confèrent ses fonctions sera puni 
+        d'un emprisonnement de six mois à trois ans et d'une amende de 50.000 à 500.000 francs. 
+        Lorsque la victime de l'infraction est âgée de moins de 16 ans, le maximum de la peine 
+        d'emprisonnement sera prononcée.`
+        : `Harcèlement sexuel bi dafa taxawal ci ordres, gestes, menaces, paroles, écrits 
+        walla contraintes ngir jot ci favours yu sexual, ku am autorité ci sa fonction. 
+        Peine mooy 6 mois ba 3 ans prison ak amende 50.000 à 500.000 FCFA. 
+        Su victime bi amul 16 ans, maxima ci peine bi lañu di prononcer.`
+    }
+  ]
+},
+
+    identity_theft: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Protéger ses documents' : 'Jëkk sa dokimaan yi',
+      content: language === 'fr' 
+        ? 'Ne laissez jamais vos papiers d\'identité sans surveillance. Photocopiez-les et gardez les originaux en sécurité.'
+        : 'Bul bàyyi say dokimaan yu bopp ci benn bër. Def copies yi te dëkk originals yi ci sécurité.',
+      icon: Shield
+    },
+    {
+      title: language === 'fr' ? 'Vigilance en ligne' : 'Tàngal ci internet',
+      content: language === 'fr' 
+        ? 'Ne partagez jamais vos informations personnelles sur les réseaux sociaux ou sites non sécurisés.'
+        : 'Bul jox kenn sa xibaar yu bopp ci réseaux sociaux walla sites yu amul sécurité.',
+      icon: Eye
+    },
+    {
+      title: language === 'fr' ? 'Signaler rapidement' : 'Baxal ci gaaw',
+      content: language === 'fr' 
+        ? 'En cas d\'usurpation, contactez immédiatement la police et vos banques.'
+        : 'Su fekkee usurpation, jokkoo police ak say banques ci gaaw.',
+      icon: Phone
+    }
+  ],
+  laws: [
+    {
+      title: language === 'fr'
+        ? 'Article 431-56 (2008-11) - Usurpation d\'identité'
+        : 'Article 431-56 (2008-11) - Usurpation d\'identité',
+      content: language === 'fr'
+        ? `Quiconque aura reçu des informations personnelles, confidentielles ou celles
+        qui sont protégées par le secret professionnel, usant de manœuvres frauduleuses quelconques,
+        soit en faisant usage de faux noms ou de fausses qualités, sera puni des peines prévues à l’alinéa 1er 
+        de l’article 379.`
+        : `Ku jot xibaar yu bopp, yu sutura walla yu sédd ci secret professionnel, 
+        te nga jëfandikoo manœuvre yu bon, buñu dëgg ci tur walla qualité, 
+        dina ñu koy fal ak peine yi ci article 379 alinéa 1er.`
+    }
+  ]
+},
+
+    money_laundering: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Reconnaître le blanchiment' : 'Xam blanchiment bi',
+      content: language === 'fr' 
+        ? 'Transactions suspectes, montants inhabituels, sources de revenus floues.'
+        : 'Transaction yu jafe, xaalis yu dëggu, sources revenus yu jafe.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Signaler les activités suspectes' : 'Baxal jëf yu jafe',
+      content: language === 'fr' 
+        ? 'Contactez les autorités financières ou utilisez notre plateforme pour signaler.'
+        : 'Jokkoo autorités yu xaalis walla jëfandikoo nun la platform bi ngir baxal.',
+      icon: Shield
+    },
+    {
+      title: language === 'fr' ? 'Protection personnelle' : 'Jëkk sa bopp',
+      content: language === 'fr' 
+        ? 'Ne participez jamais à des transactions douteuses, même si on vous propose de l\'argent.'
+        : 'Joxe kenn bokk ci transaction yu jafe, ndax su la leen xaalis.',
+      icon: Users
+    }
+  ],
+  laws: [
+    {
+      title: language === 'fr' ? 'Article 415 - Blanchiment d’argent' : 'Article 415 - Blanchiment bu xaalis',
+      content: language === 'fr'
+        ? 'Le blanchiment d’argent par des transactions frauduleuses est puni conformément au Code pénal.'
+        : 'Blanchiment bu xaalis ci transaction yu jafe moo punish selon Code pénal.'
+    }
+  ]
+},
+   corruption: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Reconnaître la corruption' : 'Xam sëpp bi',
+      content: language === 'fr' 
+        ? 'Demande d\'argent pour un service public, favoritisme, détournement de fonds.'
+        : 'Laaj xaalis ngir service bu réew mi, favoritisme, feek xaalis yu réew mi.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Vos droits' : 'Sa jëf',
+      content: language === 'fr' 
+        ? 'Vous avez le droit de refuser de payer des pots-de-vin. Les services publics sont gratuits.'
+        : 'Am nga jëf u nees fey pot-de-vin. Services yu réew mi ñu ngi ligeey.',
+      icon: Shield
+    },
+    {
+      title: language === 'fr' ? 'Comment signaler' : 'Na ngeen baxal',
+      content: language === 'fr' 
+        ? 'Utilisez notre plateforme ou la ligne verte anti-corruption: 800 00 80 80'
+        : 'Jëfandikoo nun la plateforme bi walla ligne verte anti-corruption: 800 00 80 80',
+      icon: Phone
+    }
+  ],
+  laws: [
+    {
+      title: language === 'fr' 
+        ? 'Article 159 et suivants - Corruption' 
+        : 'Article 159 ak topp - Sëpp',
+      content: language === 'fr'
+        ? `Sera puni d'un emprisonnement de deux à dix ans et d'une amende double 
+        de la valeur des promesses agréées ou des choses reçues ou demandées, 
+        sans que ladite amende puisse être inférieure à 150.000 francs, 
+        quiconque aura sollicité ou agréé des offres ou promesses, sollicité 
+        ou reçu des dons ou présents...`
+        : `Ku def sëpp dina am 2 ba 10 ans prison, ak amende bu gën a néew 150.000 FCFA, 
+        te am ndax ñaari yoon ci valeur yi lañu jël walla lañu may. Ku laaj walla jël dons, 
+        cadeaux walla promesses, dina fay.`
+    }
+  ]
+},
+
+   theft: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Sécuriser son domicile' : 'Jëkk sa kër',
+      content: language === 'fr' 
+        ? 'Installez des serrures solides, éclairage extérieur et système d\'alarme si possible.'
+        : 'Doxal serrures yu gëna, éclairage bu bëj kër gi ak système d\'alarme su mën.',
+      icon: Home
+    },
+    {
+      title: language === 'fr' ? 'En déplacement' : 'Bu dem',
+      content: language === 'fr' 
+        ? 'Ne montrez pas vos objets de valeur. Restez vigilant dans les transports en commun.'
+        : 'Wontu sa alal yu bari. Tàngal ci transport en commun.',
+      icon: Car
+    },
+    {
+      title: language === 'fr' ? 'Téléphone portable' : 'Téléphone portable',
+      content: language === 'fr' 
+        ? 'Notez votre numéro IMEI. Activez le verrouillage automatique et la géolocalisation.'
+        : 'Bind sa nimero IMEI. Doxal verrouillage otomatik ak géolocalisation.',
+      icon: Smartphone
+    }
+  ],
+  laws: [
+    {
+      title: language === 'fr' ? 'Article 364 - Vol' : 'Article 364 - Vol',
+      content: language === 'fr'
+        ? 'Quiconque a soustrait frauduleusement une chose qui ne lui appartient pas est coupable de vol.'
+        : 'Ku jël mbir bu kenn, te du sa bopp, ak manœuvre bu bon, moo doon coupable de vol.'
+    }
+  ]
+},
+
+   violence: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Signaux d\'alarme' : 'Signaux d\'alarme',
+      content: language === 'fr' 
+        ? 'Menaces, isolement, contrôle excessif, violence physique ou psychologique.'
+        : 'Menaces, isolation, contrôle bu bari, fit ci yaram walla ci xel.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Demander de l\'aide' : 'Laaj ndimbalante',
+      content: language === 'fr' 
+        ? 'Contactez le 3919 (violences femmes), police (17) ou nos services confidentiels.'
+        : 'Jokkoo 3919 (fit ci jigéen yi), police (17) walla nun la services yu sutura.',
+      icon: Phone
+    },
+    {
+      title: language === 'fr' ? 'Soutenir une victime' : 'Dimbalante ab victim',
+      content: language === 'fr' 
+        ? 'Écoutez sans juger, encouragez à chercher de l\'aide professionnelle.'
+        : 'Déggal bu amul jugement, yàgg ko ngir wut ndimbalante bu professionnel.',
+      icon: Users
+    }
+  ],
+  laws: [
+    {
+      title: 'Article 320 - Définition et peines du viol',
+      content: language === 'fr'
+        ? 'Tout acte de pénétration sexuelle, de quelque nature qu\'il soit, commis sur la personne d\'autrui par violence, contrainte, menace ou surprise est un viol. Le viol est puni de la réclusion criminelle de dix à vingt ans.'
+        : 'Benn jëf bu tënk ci pénétration sexuelle, lu mën am, ci nit bi ci jëfandikoo violence, menace walla surprise, mooy viol. Violation yi dëggu njaboot criminelle 10-20 ans.'
+    },
+    {
+      title: 'Circonstances aggravantes',
+      content: language === 'fr'
+        ? 'Peines doublées si mutilation, infirmité permanente, séquestration, ou si la victime est mineure ou vulnérable.'
+        : 'Peines yu gënëm su bëgg jafe, infirmité permanente, séquestration, walla su nit bi amul njariñ walla vulnérable.'
+    },
+    {
+      title: 'Article 320 bis - Actes pédophiles',
+      content: language === 'fr'
+        ? 'Tout geste, attouchement, caresse, manipulation pornographique, utilisation d\'images ou de sons à des fins sexuelles sur un enfant de moins de seize ans est puni d\'emprisonnement de cinq à dix ans.'
+        : 'Benn jëf, attouchement, caresse, manipulation pornographique, jëf ci images walla sons ci benn xarit bu ndaw 16 ans dëggu emprisonnement 5-10 ans.'
+    }
+  ]
+}
+};
 
   const getColorClasses = (color: string) => {
     const colors = {
@@ -281,16 +334,7 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
     return colors[color as keyof typeof colors] || colors.blue;
   };
 
-  const getResourceIcon = (type: string) => {
-    switch (type) {
-      case 'pdf': return <Download className="h-4 w-4" />;
-      case 'video': return <Play className="h-4 w-4" />;
-      case 'checklist': return <CheckCircle className="h-4 w-4" />;
-      case 'contacts': return <Phone className="h-4 w-4" />;
-      case 'form': return <ExternalLink className="h-4 w-4" />;
-      default: return <BookOpen className="h-4 w-4" />;
-    }
-  };
+ 
 
   const currentCategory = preventionCategories.find(cat => cat.id === selectedCategory);
   const currentContent = preventionContent[selectedCategory as keyof typeof preventionContent];
@@ -443,35 +487,30 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Resources */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                {language === 'fr' ? 'Lois et Article' : 'Lois ak Article'}
-              </h3>
-              <div className="space-y-3">
-                {currentContent?.resources.map((resource, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-blue-100 p-2 rounded">
-                        {getResourceIcon(resource.type)}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">{resource.title}</p>
-                        <p className="text-xs text-gray-500">
-                          {resource.size && `${resource.size}`}
-                          {resource.duration && `${resource.duration}`}
-                          {resource.items && `${resource.items} ${language === 'fr' ? 'éléments' : 'alal'}`}
-                          {resource.pages && `${resource.pages} ${language === 'fr' ? 'pages' : 'pages'}`}
-                          {resource.steps && `${resource.steps} ${language === 'fr' ? 'étapes' : 'étapes'}`}
-                          {resource.fields && `${resource.fields} ${language === 'fr' ? 'champs' : 'champs'}`}
-                        </p>
-                      </div>
+           <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">
+              {language === 'fr' ? 'Articles de loi' : 'Articles yu loi'}
+            </h3>
+            <div className="space-y-3">
+              {currentContent?.laws.map((law, index) => (
+                <div 
+                  key={index} 
+                  className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="bg-blue-100 p-2 rounded">
+                      <BookOpen className="h-4 w-4 text-blue-600" />
                     </div>
-                    <ExternalLink className="h-4 w-4 text-gray-400" />
+                    <p className="font-medium text-gray-900 text-sm">{law.title}</p>
                   </div>
-                ))}
-              </div>
+                  {law.content && (
+                    <p className="text-xs text-gray-600 leading-relaxed">{law.content}</p>
+                  )}
+                </div>
+              ))}
             </div>
+          </div>
+
 
             {/* Quick Actions */}
             <div className="bg-white rounded-2xl shadow-lg p-6">

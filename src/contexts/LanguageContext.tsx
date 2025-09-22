@@ -20,8 +20,8 @@ const translations = {
     'nav.dashboard': 'Tableau de Bord',
     
     // Home Page
-    'home.title': 'Plateforme Nationale de Dénonciation',
-    'home.subtitle': 'Votre sécurité, notre priorité. Signalez les crimes en toute confidentialité.',
+    'home.title': 'Plateforme de signalement',
+    'home.subtitle': 'Signalez. Protéger ensemble.',
     'home.report_crime': 'Signaler un Crime',
     'home.view_reports': 'Mes Signalements',
     'home.emergency_contacts': 'Contacts d\'Urgence',
@@ -71,25 +71,25 @@ const translations = {
     'common.previous': 'Précédent',
   },
   wo: {
-    // Navigation
+     // Navigation
     'nav.home': 'Kër',
-    'nav.report': 'Baxal',
-    'nav.my_reports': 'Sama Baxal',
-    'nav.prevention': 'Yëgle',
-    'nav.emergency': 'Caxaan',
+    'nav.report': 'xamale',
+    'nav.my_reports': 'Samay xamle',
+    'nav.prevention': 'fàggu',
+    'nav.emergency': 'cëtëŋ ',
     'nav.profile': 'Profil',
     'nav.dashboard': 'Tabloam',
     
     // Home Page
-    'home.title': 'Plateforme bu Ñepp ci Baxal Njub',
-    'home.subtitle': 'Sa sécurité, nun la ci wëy. Baxal njub yi ci sutureem.',
-    'home.report_crime': 'Baxal ab Njub',
-    'home.view_reports': 'Gis Sama Baxal',
-    'home.emergency_contacts': 'Nimero yu Caxaan',
-    'home.statistics.title': 'Statistique bu Ñepp',
-    'home.statistics.total_reports': 'Baxal yi Ëpp',
-    'home.statistics.resolved': 'Yi Jaax',
-    'home.statistics.in_progress': 'Yi ci Wax',
+    'home.title': 'Platformu xamle',
+    'home.subtitle': 'xamal.Aar benn benn. ',
+    'home.report_crime': 'Xamal njubba',
+    'home.view_reports':'Samay xamle',
+    'home.emergency_contacts': 'Numéru ndimbal gaaw',
+    'home.statistics.title': 'Statistik bu réew mi',
+    'home.statistics.total_reports': 'Xamle yépp',
+    'home.statistics.resolved': 'Sotti',
+    'home.statistics.in_progress': 'Ci yoon wi',
     
     // Report Form
     'report.title': 'Baxal bu Bees',

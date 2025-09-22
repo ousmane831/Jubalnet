@@ -14,7 +14,15 @@ import {
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiService } from '../../services/api';
-import heroImage from "../../assets/cyber.jpg"; // <-- chemin relatif depuis ton fichier
+import hero1 from "../../assets/crime3.jpg";
+import hero2 from "../../assets/crime.jpg";
+import hero3 from "../../assets/crime1.jpg"; 
+import hero4 from "../../assets/crime2.jpg";
+import hero5 from "../../assets/crime4.jpg";
+import hero6 from "../../assets/crime5.jpg";
+
+import logo from "../../assets/jubbalnet3.png";
+
 
 interface HomePageProps {
   onPageChange: (page: string) => void;
@@ -27,7 +35,21 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
     total_reports: 0,
     resolved_reports: 0,
     in_progress_reports: 0,
+    total_users: 0,
   });
+
+
+// --- HERO SLIDER LOGIC ---
+  const images = [ hero1, hero2, hero3, hero4, hero5, hero6 ];
+  const [current, setCurrent] = useState(0);
+
+useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
 
   useEffect(() => {
     const loadStatistics = async () => {
@@ -63,7 +85,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
     },
     { 
       icon: Users, 
-      value: '45,892', // Static for now
+      value: statistics.total_users.toLocaleString(),
       label: language === 'fr' ? 'Citoyens Engagés' : 'Nit ñu Boole',
       color: 'text-purple-600'
     },
@@ -113,52 +135,70 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
      
-
-{/* Hero Section */}
-<div
-  className="relative overflow-hidden bg-cover bg-center"
-  style={{
-    backgroundImage: `url(${heroImage})`,
-  }}
->
-  {/* Overlay sombre */}
-  <div className="absolute inset-0 bg-black/50"></div> 
-  {/* Le "/40" correspond à 40% d'opacité */}
-
-  {/* Overlay gradient pour l’effet coloré */}
-  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-indigo-600/10"></div>
-
-  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-    <div className="text-center">
-      <div className="flex justify-center mb-6">
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-2xl shadow-lg">
-          <Shield className="h-12 w-12 text-white" />
-        </div>
-      </div>
-
-      <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6">
-        <span className="bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
-          {t('home.title')}
-        </span>
-      </h1>
-
-      <p className="text-xl lg:text-2xl text-gray-200 mb-8 max-w-4xl mx-auto leading-relaxed">
-        {t('home.subtitle')}
-      </p>
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <button
-          onClick={() => onPageChange('report')}
-          className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-        >
-          <div className="flex items-center space-x-2">
-            <AlertCircle className="h-5 w-5" />
-            <span>{language === 'fr' ? '🚨 Signalement d\'Urgence' : '🚨 Baxal bu Caxaan'}</span>
-            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </div>
-        </button>
-      </div>
+{/* HERO SECTION */}
+<div className="relative h-[600px] overflow-hidden">
+  {images.map((img, index) => (
+    <div
+      key={index}
+      className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
+        index === current ? "opacity-100" : "opacity-0"
+      }`}
+      style={{ backgroundImage: `url(${img})` }}
+    >
+      <div className="absolute inset-0 bg-black/50"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-indigo-600/10"></div>
     </div>
+  ))}
+
+  {/* Ton contenu central */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
+    <div className="flex justify-center mb-6">
+      <div className="flex items-center space-x-3">
+          <img 
+            src={logo} 
+            alt="logo_jubbalnet" 
+            className="h-40 w-40 object-contain" // 👈 taille fixe, s’adapte bien
+          />
+        </div>
+    </div>
+
+    <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6">
+      <span className="bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
+        {t('home.title')}
+      </span>
+    </h1>
+
+    <p className="text-xl lg:text-2xl text-gray-200 mb-8 max-w-4xl mx-auto leading-relaxed">
+      {t('home.subtitle')}
+    </p>
+
+    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <button
+        onClick={() => onPageChange('report')}
+        className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+      >
+        <div className="flex items-center space-x-2">
+          <AlertCircle className="h-5 w-5" />
+          <span>
+            {language === 'fr' ? '🚨 Signalement d\'Urgence' : '🚨 Baxal bu Caxaan'}
+          </span>
+          <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+        </div>
+      </button>
+    </div>
+  </div>
+
+  {/* Indicateurs (petits ronds en bas) */}
+  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+    {images.map((_, index) => (
+      <button
+        key={index}
+        className={`w-3 h-3 rounded-full transition-all ${
+          index === current ? "bg-white scale-110" : "bg-white/50"
+        }`}
+        onClick={() => setCurrent(index)}
+      ></button>
+    ))}
   </div>
 </div>
 

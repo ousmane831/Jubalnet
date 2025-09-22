@@ -5,7 +5,6 @@ import {
   CheckCircle, 
   AlertTriangle, 
   Eye, 
-  Filter,
   Calendar,
   MapPin,
   User,
@@ -208,8 +207,47 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
                         </span>
                       </div>
                     </div>
+
+
+                  {/* Médias attachés */}
+                  {selectedReport.media_files && selectedReport.media_files.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        {language === 'fr' ? 'Pièces jointes' : 'Jappante yi'}
+                      </h3>
+                      <div className="space-y-2">
+                        {selectedReport.media_files.map((media) => (
+                          <a
+                            key={media.id}
+                            href={media.file}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-blue-600 hover:underline"
+                          >
+                            📎 {media.file_name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Audio attaché */}
+                  {selectedReport.voice_report && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        {language === 'fr' ? 'Rapport vocal' : 'Rapport ci baat'}
+                      </h3>
+                      <audio controls className="w-full">
+                        <source src={selectedReport.voice_report.audio_file} type="audio/mpeg" />
+                        {language === 'fr' ? 'Votre navigateur ne supporte pas la lecture audio.' : 'Navigateur bi du may la jàngal ci baat.'}
+                      </audio>
+                    </div>
+                  )}
+
                   </div>
                 </div>
+
+                
 
                 <div className="space-y-6">
                   <div>
@@ -228,6 +266,8 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
                       </div>
                     </div>
                   </div>
+
+                  
 
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">
@@ -274,6 +314,7 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
                           <span>{language === 'fr' ? 'Contacter autorités' : 'Jokkoo autorités yi'}</span>
                         </button>
                       )}
+
                     </div>
                   </div>
                 </div>

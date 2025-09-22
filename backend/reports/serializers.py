@@ -135,10 +135,13 @@ class CrimeReportCreateSerializer(serializers.ModelSerializer):
 class CrimeReportListSerializer(serializers.ModelSerializer):
     category = CrimeCategorySerializer(read_only=True)
     user = UserSerializer(read_only=True)
-    
+    media_files = ReportMediaSerializer(many=True, read_only=True)
+    voice_report = VoiceReportSerializer(read_only=True)
+
     class Meta:
         model = CrimeReport
         fields = [
             'id', 'title', 'description', 'category', 'user', 'status', 'priority',
-            'is_anonymous', 'region', 'incident_date', 'created_at', 'updated_at'
+            'is_anonymous', 'region', 'incident_date', 'created_at', 'updated_at',
+            'latitude', 'longitude', 'voice_report', 'media_files'
         ]

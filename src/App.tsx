@@ -9,29 +9,39 @@ import { AuthPage } from './components/Pages/AuthPage';
 import { EmergencyPage } from './components/Pages/EmergencyPage';
 import { MyReportsPage } from './components/Pages/MyReportsPage';
 import { PreventionPage } from './components/Pages/PreventionPage';
+import { VosDroits } from './components/Pages/VosDroits';
+import { Confidentialite } from './components/Pages/Confidentialite';
+import { DashboardPage } from './components/Pages/DashboardPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
 
   const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <HomePage onPageChange={setCurrentPage} />;
-      case 'report':
-        return <ReportPage onPageChange={setCurrentPage} />;
-      case 'auth':
-      case 'register':
-        return <AuthPage onPageChange={setCurrentPage} />;
-      case 'emergency':
-        return <EmergencyPage onPageChange={setCurrentPage} />;
-      case 'my-reports':
-        return <MyReportsPage onPageChange={setCurrentPage} />;
-      case 'prevention':
-        return <PreventionPage onPageChange={setCurrentPage} />;
-      default:
-        return <HomePage onPageChange={setCurrentPage} />;
-    }
-  };
+  switch (currentPage) {
+    case 'home':
+      return <HomePage onPageChange={setCurrentPage} />;
+    case 'report':
+      return <ReportPage onPageChange={setCurrentPage} />;
+    case 'auth':
+    case 'register':
+      return <AuthPage onPageChange={setCurrentPage} />;
+    case 'emergency':
+      return <EmergencyPage onPageChange={setCurrentPage} />;
+    case 'my-reports':
+      return <MyReportsPage onPageChange={setCurrentPage} />;
+    case 'prevention':
+      return <PreventionPage onPageChange={setCurrentPage} />;
+    case 'vos-droits':
+      return <VosDroits onPageChange={setCurrentPage} />;
+    case 'confidentialite':
+      return <Confidentialite onPageChange={setCurrentPage} />;
+    case 'dashboard':
+        return <DashboardPage onPageChange={setCurrentPage} />;
+    default:
+      return <HomePage onPageChange={setCurrentPage} />;
+  }
+};
+
 
   return (
     <LanguageProvider>
@@ -41,7 +51,7 @@ function App() {
           <main className="flex-1">
             {renderPage()}
           </main>
-          <Footer />
+         <Footer onPageChange={setCurrentPage} />
         </div>
       </AuthProvider>
     </LanguageProvider>

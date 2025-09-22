@@ -1,8 +1,13 @@
 import React from 'react';
-import { Shield, Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import logo from "../../assets/jubbalnet1.png";
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onPageChange: (page: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onPageChange }) => {
   const { language } = useLanguage();
 
   return (
@@ -12,21 +17,17 @@ export const Footer: React.FC = () => {
           {/* Logo and description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-2 rounded-lg">
-                <Shield className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold">
-                  {language === 'fr' ? 'Plateforme Nationale de Dénonciation' : 'Plateforme bu Ñepp ci Baxal'}
-                </h3>
-                <p className="text-sm text-gray-400">République du Sénégal</p>
-              </div>
+              <img 
+                src={logo} 
+                alt="logo_jubbalnet" 
+                className="h-44 w-44 object-contain" 
+              />
+              <span className="hidden sm:inline text-xl font-bold text-white-800">Jubbalnet</span>
             </div>
             <p className="text-gray-300 mb-4">
               {language === 'fr' 
                 ? 'Une initiative du gouvernement sénégalais pour lutter contre la criminalité et promouvoir la sécurité de tous les citoyens.'
-                : 'Ab initiative bu gouvernement bu Senegaal ngir xoolal njub yi ak xeex sécurité bu nit ku nekk ñepp.'
-              }
+                : 'Ab initiative bu gouvernement bu Senegaal ngir xoolal njub yi ak xeex sécurité bu nit ku nekk ñepp.'}
             </p>
             <div className="flex space-x-4">
               <a 
@@ -45,24 +46,36 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                <button
+                  onClick={() => onPageChange('report')}
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   {language === 'fr' ? 'Comment Signaler' : 'Na Ngeen Baxal'}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                <button
+                  onClick={() => onPageChange('vos-droits')}
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   {language === 'fr' ? 'Vos Droits' : 'Sa Jëf'}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                <button
+                  onClick={() => onPageChange('confidentialite')}
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   {language === 'fr' ? 'Confidentialité' : 'Sutura'}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                <button
+                  onClick={() => onPageChange('faq')}
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   {language === 'fr' ? 'FAQ' : 'Laajum Laajum'}
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -103,6 +116,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* Bottom bar */}
         <div className="border-t border-gray-700 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
@@ -110,12 +124,18 @@ export const Footer: React.FC = () => {
               {language === 'fr' ? ' Tous droits réservés.' : ' Jëf yépp ñu ko koo defar.'}
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              <button
+                onClick={() => onPageChange('confidentialite')}
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
                 {language === 'fr' ? 'Politique de confidentialité' : 'Politique bu sutura'}
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              </button>
+              <button
+                onClick={() => onPageChange('conditions')}
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
                 {language === 'fr' ? 'Conditions d\'utilisation' : 'Sarax yu jëfandikoo'}
-              </a>
+              </button>
             </div>
           </div>
         </div>
