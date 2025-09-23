@@ -7,7 +7,6 @@ import {
   User,
   Home,
   FileText,
-  AlertTriangle,
   Phone,
   Settings
 } from 'lucide-react';
@@ -49,7 +48,6 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
             alt="logo_jubbalnet" 
             className="h-44 w-44 object-contain" // 👈 taille fixe, s’adapte bien
           />
-          <span className="hidden sm:inline text-xl font-bold text-gray-800">Jubbalnet</span>
         </div>
 
           {/* Desktop Navigation */}

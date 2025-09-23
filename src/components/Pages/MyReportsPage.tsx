@@ -139,14 +139,14 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
           <div className="mb-6">
             <button
               onClick={() => setSelectedReport(null)}
-              className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              className="flex items-center text-green-600 hover:text-green-800 font-medium"
             >
               ← {language === 'fr' ? 'Retour à mes signalements' : 'Dellu ci sama baxal yi'}
             </button>
           </div>
 
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+            <div className="bg-gradient-to-r from-green-600 to-green-700 p-6 text-white">
               <div className="flex items-start justify-between">
                 <div>
                   <h1 className="text-2xl font-bold mb-2">{selectedReport.title}</h1>
@@ -509,7 +509,7 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white text-center">
+        <div className="mt-12 bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">
             {language === 'fr' ? 'Besoin d\'aide ?' : 'Soxla nga ndimbalante ?'}
           </h3>

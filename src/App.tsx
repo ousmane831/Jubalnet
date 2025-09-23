@@ -9,9 +9,8 @@ import { AuthPage } from './components/Pages/AuthPage';
 import { EmergencyPage } from './components/Pages/EmergencyPage';
 import { MyReportsPage } from './components/Pages/MyReportsPage';
 import { PreventionPage } from './components/Pages/PreventionPage';
-import { VosDroits } from './components/Pages/VosDroits';
-import { Confidentialite } from './components/Pages/Confidentialite';
 import { DashboardPage } from './components/Pages/DashboardPage';
+import Confidentialite from './components/Pages/Confidentialite';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -31,8 +30,6 @@ function App() {
       return <MyReportsPage onPageChange={setCurrentPage} />;
     case 'prevention':
       return <PreventionPage onPageChange={setCurrentPage} />;
-    case 'vos-droits':
-      return <VosDroits onPageChange={setCurrentPage} />;
     case 'confidentialite':
       return <Confidentialite onPageChange={setCurrentPage} />;
     case 'dashboard':

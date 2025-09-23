@@ -9,7 +9,6 @@ import {
   Car,
   Phone,
   BookOpen,
-  Download,
   ChevronRight,
 
 } from 'lucide-react';
@@ -77,8 +76,45 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
       color: 'purple',
       description: language === 'fr' 
         ? 'Prévention des violences et protection des victimes'
+        : 'Yëgle fit ak ndimbalante ab victim'
+    },
+    {
+      id: 'Arnaque',
+      name: language === 'fr' ? 'Arnaque par SMS/EMAIL' : 'Arnaque par SMS/EMAIL',
+      icon: Users,
+      color: 'red',
+      description: language === 'fr' 
+        ? 'Prévention contre les arnaques par SMS/EMAIL'
+        : 'Yëgle arnaque par SMS/EMAIL'
+    },
+    {
+      id: 'fraude',
+      name: language === 'fr' ? 'Fraude bancaire' : 'Fit ak Njëbul',
+      icon: AlertTriangle,
+      color: 'blue',
+      description: language === 'fr' 
+        ? 'Prévention contre les fraudes bancaires'
         : 'Yëgle fit ak jëkk nit ñi ci am'
+    },
+     {
+      id: 'phishing',
+      name: language === 'fr' ? 'Phishing/Hameçonnage' : 'Phishing/Hameçonnage',
+      icon: Shield,
+      color: 'green',
+      description: language === 'fr' 
+        ? 'Prévention contre le phishing et hameçonnage'
+        : ' Yëgle phishing ak hameçonnage'
+    },
+    {
+      id: 'chantage',
+      name: language === 'fr' ? ' Chantage/Sextorsion' : ' Chantage/Sextorsion',
+      icon: Users,
+      color: 'orange',
+      description: language === 'fr' 
+        ? 'Prévention contre le Chantage/Sextorsion'
+        : ' Yëgle Chantage/Sextorsion'
     }
+  
   ];
 
   const preventionContent = {
@@ -320,7 +356,167 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
         : 'Benn jëf, attouchement, caresse, manipulation pornographique, jëf ci images walla sons ci benn xarit bu ndaw 16 ans dëggu emprisonnement 5-10 ans.'
     }
   ]
+},
+    Arnaque: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Comment reconnaitre ce crime' : 'Naka ngeen xam ne am na benn njub',
+      content: language === 'fr' 
+        ? 'Messages urgents demandant des informations bancaires. \nPromesses de gains faciles ou de prix à récupérer. \nMenaces de fermeture de compte si pas de réaction immédiate' 
+  
+        : '.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Comment ce protéger' : 'Laaj ndimbalante',
+      content: language === 'fr' 
+        ? 'Ne jamais communiquer ses codes bancaires par SMS ou email. \nVérifier l\'identité de l\'expéditeur en contactant directement l\'organisme. \nSe méfier des offres trop alléchantes'
+        : '.',
+      icon: Phone
+    },
+    {
+      title: language === 'fr' ? 'Ressources Utiles' : ' Ressources Utiles',
+      content: language === 'fr' 
+        ? 'Numéro vert BCEAO : 8000 (gratuit). \nSite officiel de la BCEAO : www.bceao.int \nContactez votre banque immédiatement en cas de doute.'
+        : '.',
+      icon: Users
+    }
+  ],
+  laws: [
+    {
+      title: 'Article 379 bis- Arnaque par sms/mail',
+      content: language === 'fr'
+        ? `Quiconque aura reçu des avantages ou des commodités matérielles,
+         des prestations ou seserait fait fournir des services en employant
+          soit des manoeuvres frauduleuses quelconque, soit en faisant usage
+           de faux nom ou de fausses qualités, sera puni des peines prévues
+            à l\'alinéa premier de l\'article précédent.`
+        : '.'
+    },
+  ]
+},
+
+fraude: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Comment reconnaitre ce crime' : 'Naka ngeen xam ne am na benn njub',
+      content: language === 'fr' 
+        ? 'Transactions non autorisées sur le compte. \nRéception de codes OTP non demandés. \nSites web bancaires avec URL suspecte' 
+  
+        : '.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Comment ce protéger' : 'Laaj ndimbalante',
+      content: language === 'fr' 
+        ? 'Ne jamais partager ses codes d\'accès. \nUtiliser uniquement les sites officiels des banques. \nVérifier l\'URL (https://) avant de saisir ses données'
+        : '.',
+      icon: Phone
+    },
+    {
+      title: language === 'fr' ? 'Ressources Utiles' : ' Ressources Utiles',
+      content: language === 'fr' 
+        ? 'Service client de votre banque. \nBCEAO - Département de la surveillance bancaire'
+        : '.',
+      icon: Users
+    }
+  ],
+  laws: [
+    {
+      title: 'Article 431-16 - Fraude informatique',
+      content: language === 'fr'
+        ? `Quiconque aura obtenu frauduleusement, pour soi-même ou pour autrui,
+         un avantage quelconque, par l’introduction, l’altération, l’effacement
+          ou la suppression de données informatisées ou par toute forme d’atteinte
+           au fonctionnement d’un système informatique, sera puni d’un emprisonnement
+            de un (1) an à cinq (5) ans et d’une amende de 5.000.000 francs à 10.000.000
+             francs ou de l’une de ces deux peines seulement.`
+        : '.'
+    },
+  ]
+},
+phishing: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Comment reconnaitre ce crime' : 'Naka ngeen xam ne am na benn njub',
+      content: language === 'fr' 
+        ? 'Emails imitant des sites connus (banques, réseaux sociaux). \nURLs légèrement différentes des sites officiels. \nDemandes urgentes de mise à jour de données.' 
+  
+        : '.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Comment ce protéger' : 'Laaj ndimbalante',
+      content: language === 'fr' 
+        ? 'Ne pas cliquer sur les liens dans les emails suspects. \nVérifier toujours l\'URL des sites web. \nSaisir manuellement l\'adresse des sites sensibles'
+        : '.',
+      icon: Phone
+    },
+    {
+      title: language === 'fr' ? 'Ressources Utiles' : ' Ressources Utiles',
+      content: language === 'fr' 
+        ? 'CERT-SN (Computer Emergency Response Team Sénégal). \nARTP - Autorité de Régulation des Télécommunications'
+        : '.',
+      icon: Users
+    }
+  ],
+  laws: [
+    {
+      title: 'Article 431-8 - Phishing/Hameçonnage',
+      content: language === 'fr'
+        ? `Quiconque aura accédé ou tenté d’accéder frauduleusement à tout ou partie
+          d\’un système informatique, sera puni d\’un emprisonnement de six (6) mois à
+          trois (3) ans et d\’une amende de 1.000.000 à 10.000.000 francs ou de l’une de ces
+          deux peines seulement.
+          Est puni des mêmes peines, celui qui se procure ou tente de se procurer
+          frauduleusement, pour soi-même ou pour autrui, un avantage quelconque en
+          s\’introduisant dans un système informatique`
+        : '.'
+    },
+  ]
+},
+chantage: {
+  tips: [
+    {
+      title: language === 'fr' ? 'Comment reconnaitre ce crime' : 'Naka ngeen xam ne am na benn njub',
+      content: language === 'fr' 
+        ? 'Demandes d\'argent en échange de non-diffusion de contenus. \nMenaces de publication de photos/vidéos intimes. \nContacts de personnes inconnues prétendant avoir des preuves compromettantes.' 
+  
+        : '.',
+      icon: AlertTriangle
+    },
+    {
+      title: language === 'fr' ? 'Comment ce protéger' : 'Laaj ndimbalante',
+      content: language === 'fr' 
+        ? 'Ne jamais envoyer de contenus intimes par internet. \nVérifier l\'identité réelle des personnes rencontrées en ligne. \nNe pas céder au chantage et signaler immédiatement'
+        : '.',
+      icon: Phone
+    },
+    {
+      title: language === 'fr' ? 'Ressources Utiles' : ' Ressources Utiles',
+      content: language === 'fr' 
+        ? 'Numéro d\'urgence Police : 17. \nAssociation des Juristes Sénégalaises (AJS)'
+        : '.',
+      icon: Users
+    }
+  ],
+  laws: [
+    {
+      title: '363 BIS code pénal -divulgation d\'image ou audio',
+      content: language === 'fr'
+        ? `Est puni d'un emprisonnement d'un an a cinq ans et d'une amende de 500.000 francs
+          a 5.000.000 de francs celui qui, au moyen d'un procédé quelconque, porte volontairement
+          atteinte a l'intimité de la vie privée d'autrui en captant, enregistrant,transmettant
+          ou diffusant sans le consentement de leur auteur, des paroles prononcées a titre privé
+          ou confidentiel en fixant, enregistrant, transmettant ou diffusant, sans le consentement
+          de celle-ci l'image d'une personne se trouvant dans un lieu privé`
+        : '.'
+    },
+  ]
 }
+
+
+
 };
 
   const getColorClasses = (color: string) => {
@@ -334,7 +530,6 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
     return colors[color as keyof typeof colors] || colors.blue;
   };
 
- 
 
   const currentCategory = preventionCategories.find(cat => cat.id === selectedCategory);
   const currentContent = preventionContent[selectedCategory as keyof typeof preventionContent];
@@ -446,9 +641,15 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
                         </div>
                       </button>
                       {isExpanded && (
-                        <div className="px-4 pb-4">
-                          <p className="text-gray-700 leading-relaxed pl-12">{tip.content}</p>
-                        </div>
+                       <div className="px-4 pb-4">
+                            <p 
+                              style={{ whiteSpace: "pre-line" }} 
+                              className="text-gray-700 leading-relaxed pl-12"
+                            >
+                              {tip.content}
+                            </p>
+                          </div>
+
                       )}
                     </div>
                   );
@@ -532,33 +733,18 @@ export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) 
                   <Phone className="h-4 w-4" />
                   <span>{language === 'fr' ? 'Contacts d\'urgence' : 'Jokkoo yu caxaan'}</span>
                 </button>
-                <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
-                  <Download className="h-4 w-4" />
-                  <span>{language === 'fr' ? 'Guide complet PDF' : 'Guide bu moom PDF'}</span>
-                </button>
+                <button
+                    onClick={() => onPageChange('emergency')}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                    <span>{language === 'fr' ? 'Guide complet' : 'Guide complet'}</span>
+                  </button>
+                
               </div>
             </div>
 
-            {/* Statistics */}
-            <div className="bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-6 text-white">
-              <h3 className="text-lg font-bold mb-4">
-                📊 {language === 'fr' ? 'Impact de la Prévention' : 'Impact bu Yëgle'}
-              </h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-green-100">{language === 'fr' ? 'Crimes évités' : 'Njub yi yëgle'}</span>
-                  <span className="font-bold">-23%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-green-100">{language === 'fr' ? 'Citoyens sensibilisés' : 'Nit ñi sensibilisé'}</span>
-                  <span className="font-bold">45,892</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-green-100">{language === 'fr' ? 'Guides téléchargés' : 'Guide yi télécharger'}</span>
-                  <span className="font-bold">12,456</span>
-                </div>
-              </div>
-            </div>
+    
           </div>
         </div>
 

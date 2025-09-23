@@ -56,7 +56,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onPageChange }) => {
       <div className="max-w-md mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-2xl shadow-lg inline-block mb-4">
+          <div className="bg-gradient-to-br from-green-600 to-green-700 p-4 rounded-2xl shadow-lg inline-block mb-4">
             <Shield className="h-10 w-10 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -209,7 +209,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onPageChange }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-blue-800 text-white py-3 px-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -257,7 +257,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onPageChange }) => {
                   {language === 'fr' ? 'Déjà un compte ? ' : 'Am nga compte ? '}
                   <button
                     onClick={() => setMode('login')}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-green-600 hover:text-green-800 font-medium"
                   >
                     {language === 'fr' ? 'Se connecter' : 'Togg'}
                   </button>
@@ -267,7 +267,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onPageChange }) => {
                   {language === 'fr' ? 'Pas encore de compte ? ' : 'Amul compte ? '}
                   <button
                     onClick={() => setMode('register')}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-green-600 hover:text-green-800 font-medium"
                   >
                     {language === 'fr' ? 'S\'inscrire' : 'Bindd'}
                   </button>

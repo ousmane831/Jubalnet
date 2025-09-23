@@ -55,7 +55,7 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange }) => {
               </li>
               <li>
                 <button
-                  onClick={() => onPageChange('vos-droits')}
+                  onClick={() => onPageChange('confidentialite')}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   {language === 'fr' ? 'Vos Droits' : 'Sa Jëf'}
@@ -98,7 +98,7 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange }) => {
               <li className="flex items-start space-x-2">
                 <Mail className="h-4 w-4 mt-0.5 text-gray-400" />
                 <div>
-                  <p className="text-sm text-gray-300">contact@denonciation.sn</p>
+                  <p className="text-sm text-gray-300">contact@jubbalnet.sn</p>
                   <p className="text-xs text-gray-400">
                     {language === 'fr' ? 'Informations générales' : 'Xibaar yu lokoo'}
                   </p>
