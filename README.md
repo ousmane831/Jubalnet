@@ -1,4 +1,3 @@
-
 # JUBBAL-NET
 Jubbal Net est une plateforme numérique citoyenne de signalement des crimes et délits au Sénégal. Conçue pour lutter contre la cybercriminalité (arnaques en ligne, usurpations d’identité, fraudes, cyberharcèlement…), elle couvre également d’autres infractions comme le blanchiment de capitaux, la corruption, le vol, le cambriolage ou encore les violences physiques.
 
