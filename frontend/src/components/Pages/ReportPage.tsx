@@ -24,7 +24,7 @@ interface ReportPageProps {
 
 export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
   const { t, language } = useLanguage();
-  const { user, isAuthenticated, loginAnonymous } = useAuth();
+  const { isAuthenticated, loginAnonymous } = useAuth();
   
   const [reportMode, setReportMode] = useState<'form' | 'voice'>('form');
   const [isRecording, setIsRecording] = useState(false);
@@ -34,7 +34,7 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [useGps, setUseGps] = useState(false);
+  const [setUseGps] = useState(false);
   const [gpsLocation, setGpsLocation] = useState<{lat: number; lng: number} | null>(null);
   const [otherCrimeSpecification, setOtherCrimeSpecification] = useState('');
   const [categories, setCategories] = useState<CrimeCategory[]>([]);

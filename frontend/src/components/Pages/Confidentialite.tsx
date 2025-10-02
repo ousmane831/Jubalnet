@@ -5,7 +5,7 @@ import { Shield, Lock, Eye, Database, UserCheck, AlertTriangle } from "lucide-re
 interface PageProps {
   onPageChange?: (page: string) => void;
 }
-const Confidentialite: React.FC<PageProps> = ({ onPageChange }) => {
+const Confidentialite: React.FC<PageProps> = ({ }) => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-6 max-w-4xl">

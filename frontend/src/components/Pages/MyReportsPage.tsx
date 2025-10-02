@@ -10,7 +10,6 @@ import {
   User,
   Shield,
   Search,
-  Download,
   MessageCircle
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -24,7 +23,7 @@ interface MyReportsPageProps {
 
 export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) => {
   const { language, t } = useLanguage();
-  const { user, isAuthenticated } = useAuth();
+  const {  isAuthenticated } = useAuth();
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReport, setSelectedReport] = useState<CrimeReport | null>(null);

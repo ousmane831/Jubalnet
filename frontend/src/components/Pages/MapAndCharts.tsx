@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker } from "react-leaflet";
+import { MapContainer, TileLayer, Popup, useMap, CircleMarker } from "react-leaflet";
 import {
   PieChart,
   Pie,
@@ -35,23 +35,7 @@ const FitBounds: React.FC<{ reports: CrimeReport[] }> = ({ reports }) => {
 };
 
 // Icônes personnalisées par statut
-const statusIcons: Record<string, L.Icon> = {
-  submitted: new L.Icon({
-    iconUrl: "/blue-marker.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-  }),
-  investigating: new L.Icon({
-    iconUrl: "/orange-marker.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-  }),
-  resolved: new L.Icon({
-    iconUrl: "/green-marker.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-  }),
-};
+
 
 export const MapAndCharts: React.FC<MapAndChartsProps> = ({ reports }) => {
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
@@ -129,9 +113,10 @@ export const MapAndCharts: React.FC<MapAndChartsProps> = ({ reports }) => {
     style={{ height: "400px", width: "100%" }}
   >
     <TileLayer
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      attribution="© OpenStreetMap contributors"
-    />
+  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+/>
+
     {filteredReports.map(
       (report) =>
         report.latitude &&

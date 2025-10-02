@@ -1,4 +1,4 @@
-#!C:\Users\HP ELITEBOOK G6\Desktop\projectssss\backend\env\Scripts\python.exe
+#!C:\Users\HP ELITEBOOK G6\Desktop\Jubbalnet\backend\env\Scripts\python.exe
 
 import sys
 import json

@@ -266,7 +266,7 @@ class ApiService {
   }
 
 // ---------------- Complaints ---------------- //
-async createComplaint(complaintData: ComplaintData): Promise<any> {
+async createComplaint(complaintData: ComplaintData, attachments: File[]): Promise<any> {
   const formData = new FormData();
 
   // Ajout de toutes les données

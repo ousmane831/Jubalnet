@@ -26,9 +26,9 @@ export interface CrimeCategory {
 export interface CrimeReport {
   media_files: any;
   voice_report: any;
-  voice_report: any;
   id: string;
   user_id?: string;
+  name: string;
   category_id: string;
   title: string;
   description: string;

@@ -45,6 +45,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onPageChange }) =>
     urgent_reports: 0
     
   });
+
+  
   const [activeTab, setActiveTab] = useState("reports"); // reports | roles
 
 const [complaints, setComplaints] = useState<CrimeReport[]>([]);
