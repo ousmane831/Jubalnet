@@ -145,3 +145,9 @@ class CrimeReportListSerializer(serializers.ModelSerializer):
             'is_anonymous', 'region', 'incident_date', 'created_at', 'updated_at',
             'latitude', 'longitude', 'voice_report', 'media_files'
         ]
+
+class CrimeRegionStatsSerializer(serializers.Serializer):
+    region = serializers.CharField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+    crimes = serializers.IntegerField()

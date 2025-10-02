@@ -7,4 +7,5 @@ urlpatterns = [
     path('my-reports/', views.UserReportsView.as_view(), name='user_reports'),
     path('<int:report_id>/update-status/', views.update_report_status, name='update_report_status'),
     path('statistics/', views.report_statistics, name='report_statistics'),
+    path("statistics/regions/", views.CrimeByRegionAPIView.as_view(), name="crime-by-region"),
 ]

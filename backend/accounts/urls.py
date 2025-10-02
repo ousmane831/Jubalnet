@@ -9,4 +9,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/update/', views.update_profile, name='update_profile'),
     path('emergency-contacts/', views.EmergencyContactListView.as_view(), name='emergency_contacts'),
+    
+    path('users/', views.list_users, name='list_users'),
+    path('users/<int:user_id>/update-role/', views.update_user_role, name='update_user_role'),
 ]

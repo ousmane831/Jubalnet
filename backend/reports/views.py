@@ -132,3 +132,45 @@ def report_statistics(request):
         'total_users': total_users,
     })
     
+   
+    
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Count
+from .models import CrimeReport
+from .serializers import CrimeRegionStatsSerializer
+
+# Dictionnaire des coordonnées fixes par région
+REGION_COORDINATES = {
+    "Dakar": {"lat": 14.7167, "lng": -17.4677},
+    "Thiès": {"lat": 14.791, "lng": -16.924},
+    "Saint-Louis": {"lat": 16.0179, "lng": -16.4896},
+    "Ziguinchor": {"lat": 12.5833, "lng": -16.2719},
+    "Kaolack": {"lat": 14.15, "lng": -16.0833},
+    "Diourbel": {"lat": 14.6333, "lng": -16.25},
+    "Louga": {"lat": 15.6167, "lng": -16.2333},
+}
+
+class CrimeByRegionAPIView(APIView):
+    def get(self, request):
+        stats = (
+            CrimeReport.objects
+            .values("region")
+            .annotate(crimes=Count("id"))
+            .order_by("-crimes")
+        )
+
+        results = []
+        for stat in stats:
+            region = stat["region"]
+            coords = REGION_COORDINATES.get(region)
+            if coords:
+                results.append({
+                    "region": region,
+                    "latitude": coords["lat"],
+                    "longitude": coords["lng"],
+                    "crimes": stat["crimes"]
+                })
+
+        serializer = CrimeRegionStatsSerializer(results, many=True)
+        return Response(serializer.data)

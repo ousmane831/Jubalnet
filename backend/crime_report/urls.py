@@ -7,8 +7,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
     path('api/reports/', include('reports.urls')),
+    path('api/complaints/', include('Complaint.urls')),
     path('api/categories/', include('categories.urls')),
     path('api/notifications/', include('notifications.urls')),
+    
 ]
 
 # Serve media files in development

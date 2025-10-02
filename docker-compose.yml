@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15
+    container_name: jubbalnet-db
+    environment:
+      POSTGRES_DB: jubbalnet
+      POSTGRES_USER: jubbaluser
+      POSTGRES_PASSWORD: jubbalpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: jubbalnet-backend
+    command: gunicorn crime_report.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: jubbalnet-frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
