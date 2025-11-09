@@ -32,7 +32,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onPageChange }) =>
   const { user, isAuthenticated } = useAuth();
   const [reports, setReports] = useState<CrimeReport[]>([]);
   const [categories, setCategories] = useState<CrimeCategory[]>([]);
-  const [selectedReport, setSelectedReport] = useState<CrimeReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
@@ -49,7 +48,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onPageChange }) =>
   
   const [activeTab, setActiveTab] = useState("reports"); // reports | roles
 
-const [complaints, setComplaints] = useState<CrimeReport[]>([]);
+const [complaints, setComplaints] = useState<any[]>([]);
 
   // Vérifier les permissions d'accès
   const hasAccess = isAuthenticated && user && ['authority', 'admin', 'moderator'].includes(user.role);
@@ -187,7 +186,7 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
       report.id,
       `"${report.title}"`,
       `"${report.description}"`,
-      category?.name || '',
+      category?.name_fr || category?.name_wo || '',
       report.status,
       report.priority,
       report.region,
@@ -210,168 +209,230 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
 
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header avec gradient moderne */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 rounded-2xl shadow-2xl p-8 mb-6 text-white">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                    <Shield className="h-8 w-8" />
+                  </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {language === 'fr' ? 'Tableau de Bord - Administrative' : 'Tabloam bopp - Administrative'}
+                    <h1 className="text-3xl md:text-4xl font-bold mb-1">
+                      {language === 'fr' ? 'Tableau de Bord Administratif' : 'Tabloam bopp - Administrative'}
               </h1>
-              <p className="text-lg text-gray-600">
+                    <p className="text-blue-100 text-lg">
                 {language === 'fr' 
                   ? 'Gestion et traitement des signalements de crimes'
                   : 'Gestion ak traitement signalements yu njub'
                 }
               </p>
+                  </div>
+                </div>
             </div>
             <div className="flex space-x-3">
               <button
                 onClick={loadDashboardData}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-5 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-5 w-5" />
                 <span>{language === 'fr' ? 'Actualiser' : 'Actualiser'}</span>
               </button>
               <button
                 onClick={exportReports}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                  className="bg-white text-blue-700 hover:bg-blue-50 px-5 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                <Download className="h-4 w-4" />
+                  <Download className="h-5 w-5" />
                 <span>{language === 'fr' ? 'Exporter' : 'Exporter'}</span>
               </button>
-
+              </div>
             </div>
           </div>
-      <div className="flex space-x-4 mb-6">
-  {/* Onglet Signalements */}
+
+          {/* Onglets modernes avec indicateurs */}
+          <div className="bg-white rounded-xl shadow-lg p-2 mb-6 flex flex-wrap gap-2">
   <button
     onClick={() => setActiveTab("reports")}
-    className={`px-4 py-2 rounded-lg font-medium ${
-      activeTab === "reports" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-    }`}
-  >
-    📊 {language === "fr" ? "Signalements" : "Reports"}
+              className={`relative px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 ${
+                activeTab === "reports" 
+                  ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md" 
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <FileText className="h-5 w-5" />
+              <span>{language === "fr" ? "Signalements" : "Reports"}</span>
+              {activeTab === "reports" && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {filteredReports.length}
+                </span>
+              )}
   </button>
 
-  {/* Onglet Plaintes */}
   <button
     onClick={() => setActiveTab("complaints")}
-    className={`px-4 py-2 rounded-lg font-medium ${
-      activeTab === "complaints" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
-    }`}
-  >
-    📋 {language === "fr" ? "Plaintes" : "Complaints"}
+              className={`relative px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 ${
+                activeTab === "complaints" 
+                  ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-md" 
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <FileText className="h-5 w-5" />
+              <span>{language === "fr" ? "Plaintes" : "Complaints"}</span>
+              {activeTab === "complaints" && complaints.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {complaints.length}
+                </span>
+              )}
   </button>
 
-  {/* Gestion des rôles (admin uniquement) */}
   {user?.role === "admin" && (
     <button
       onClick={() => setActiveTab("roles")}
-      className={`px-4 py-2 rounded-lg font-medium ${
-        activeTab === "roles" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-      }`}
-    >
-      👥 {language === "fr" ? "Gestion des rôles" : "Sàmm rôle yi"}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 ${
+                  activeTab === "roles" 
+                    ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-md" 
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                <User className="h-5 w-5" />
+                <span>{language === "fr" ? "Gestion des rôles" : "Sàmm rôle yi"}</span>
     </button>
   )}
 
-  {/* Carte & Statistiques */}
   <button
     onClick={() => setActiveTab("map")}
-    className={`px-4 py-2 rounded-lg font-medium ${
-      activeTab === "map" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-    }`}
-  >
-    🗺️ {language === "fr" ? "Carte & Statistiques" : "Kàrt ak Statistiques"}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 ${
+                activeTab === "map" 
+                  ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md" 
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <MapPin className="h-5 w-5" />
+              <span>{language === "fr" ? "Carte & Statistiques" : "Kàrt ak Statistiques"}</span>
   </button>
 </div>
-
-
-
-
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  {language === 'fr' ? 'Total Signalements' : 'Baxal yépp'}
-                </p>
-                <p className="text-3xl font-bold text-gray-900">{statistics.total_reports}</p>
+        {/* Statistics Cards améliorées avec animations - Affichées uniquement pour l'onglet Signalements */}
+        {activeTab === "reports" && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-blue-500 overflow-hidden group">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <FileText className="h-8 w-8 text-blue-600" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                        {language === 'fr' ? 'Total' : 'Baxal yépp'}
+                      </p>
+                      <p className="text-4xl font-bold text-gray-900">{statistics.total_reports}</p>
+                    </div>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <FileText className="h-6 w-6 text-blue-600" />
+                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{ width: '100%' }}></div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-orange-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
+              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-orange-500 overflow-hidden group">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <Clock className="h-8 w-8 text-orange-600" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   {language === 'fr' ? 'En enquête' : 'Ci wut'}
                 </p>
-                <p className="text-3xl font-bold text-gray-900">{statistics.in_progress_reports}</p>
+                      <p className="text-4xl font-bold text-gray-900">{statistics.in_progress_reports}</p>
+                    </div>
               </div>
-              <div className="bg-orange-100 p-3 rounded-lg">
-                <Clock className="h-6 w-6 text-orange-600" />
+                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500" 
+                      style={{ width: statistics.total_reports > 0 ? `${(statistics.in_progress_reports / statistics.total_reports) * 100}%` : '0%' }}
+                    ></div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
+              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-red-500 overflow-hidden group">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="bg-gradient-to-br from-red-100 to-red-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <AlertTriangle className="h-8 w-8 text-red-600" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   {language === 'fr' ? 'Urgents' : 'Caxaan'}
                 </p>
-                <p className="text-3xl font-bold text-gray-900">{statistics.urgent_reports}</p>
+                      <p className="text-4xl font-bold text-gray-900">{statistics.urgent_reports}</p>
+                    </div>
               </div>
-              <div className="bg-red-100 p-3 rounded-lg">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
+                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all duration-500" 
+                      style={{ width: statistics.total_reports > 0 ? `${(statistics.urgent_reports / statistics.total_reports) * 100}%` : '0%' }}
+                    ></div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
+              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-green-500 overflow-hidden group">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <CheckCircle className="h-8 w-8 text-green-600" />
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   {language === 'fr' ? 'Résolus' : 'Jaax'}
                 </p>
-                <p className="text-3xl font-bold text-gray-900">{statistics.resolved_reports}</p>
+                      <p className="text-4xl font-bold text-gray-900">{statistics.resolved_reports}</p>
+                    </div>
               </div>
-              <div className="bg-green-100 p-3 rounded-lg">
-                <CheckCircle className="h-6 w-6 text-green-600" />
+                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-500" 
+                      style={{ width: statistics.total_reports > 0 ? `${(statistics.resolved_reports / statistics.total_reports) * 100}%` : '0%' }}
+                    ></div>
               </div>
             </div>
           </div>
         </div>
 
-        
-
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Filters améliorés */}
+            <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+                  <Filter className="h-5 w-5 text-gray-600" />
+                  <span>{language === 'fr' ? 'Filtres de recherche' : 'Filtres wut'}</span>
+                </h3>
+                <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                  {filteredReports.length} {language === 'fr' ? 'résultats' : 'résultats'}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder={language === 'fr' ? 'Rechercher...' : 'Wut...'}
+                    placeholder={language === 'fr' ? 'Rechercher par titre, description, région...' : 'Wut ci title, description, région...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
             </div>
             
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white cursor-pointer"
             >
               {statusOptions.map(option => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -381,7 +442,7 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white cursor-pointer"
             >
               <option value="all">{language === 'fr' ? 'Toutes priorités' : 'Priorité yépp'}</option>
               <option value="urgent">{language === 'fr' ? 'Urgent' : 'Caxaan'}</option>
@@ -389,35 +450,30 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
               <option value="medium">{language === 'fr' ? 'Moyenne' : 'Diggu'}</option>
               <option value="low">{language === 'fr' ? 'Faible' : 'Ndaw'}</option>
             </select>
-
-            <div className="flex items-center space-x-2">
-              <Filter className="h-5 w-5 text-gray-400" />
-              <span className="text-sm text-gray-600">
-                {filteredReports.length} {language === 'fr' ? 'résultats' : 'résultats'}
-              </span>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
 
         {/* Reports List */}
         {activeTab === "reports" ? (
         <div className="space-y-4">
           {isLoading ? (
-            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600">
+            <div className="bg-white rounded-2xl shadow-xl p-16 text-center">
+              <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+              <p className="text-gray-600 text-lg font-medium">
                 {language === 'fr' ? 'Chargement des signalements...' : 'Daje signalements yi...'}
               </p>
             </div>
           ) : filteredReports.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-              <div className="bg-gray-100 p-4 rounded-full inline-block mb-4">
-                <FileText className="h-12 w-12 text-gray-400" />
+            <div className="bg-white rounded-2xl shadow-xl p-16 text-center">
+              <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-6 rounded-full inline-block mb-6">
+                <FileText className="h-16 w-16 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 {language === 'fr' ? 'Aucun signalement trouvé' : 'Amul signalement'}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-lg">
                 {language === 'fr' 
                   ? 'Aucun signalement ne correspond aux critères sélectionnés.'
                   : 'Amul signalement bu moom critères yi nga tànn.'
@@ -430,118 +486,127 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
               const isExpanded = expandedReport === report.id;
               
               return (
-                <div key={report.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div key={report.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
+                        <div className="flex items-center flex-wrap gap-3 mb-3">
                           <div 
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: category?.color }}
+                            className="w-4 h-4 rounded-full shadow-sm"
+                            style={{ backgroundColor: category?.color || '#6B7280' }}
                           ></div>
-                          <h3 className="text-lg font-semibold text-gray-900">{report.title}</h3>
+                          <h3 className="text-xl font-bold text-gray-900">{report.title}</h3>
                           {report.is_anonymous && (
-                            <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">
-                              <Shield className="h-3 w-3 inline mr-1" />
-                              {language === 'fr' ? 'Anonyme' : 'Sutura'}
+                            <div className="bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-blue-200 flex items-center space-x-1">
+                              <Shield className="h-3.5 w-3.5" />
+                              <span>{language === 'fr' ? 'Anonyme' : 'Sutura'}</span>
                             </div>
                           )}
-                          <div className={`px-2 py-1 rounded-full text-xs font-medium border ${getPriorityColor(report.priority)}`}>
+                          <div className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 ${getPriorityColor(report.priority)}`}>
                             {report.priority.toUpperCase()}
                           </div>
                         </div>
                         
-                        <p className="text-gray-600 mb-3 line-clamp-2">{report.description}</p>
+                        <p className="text-gray-600 mb-4 line-clamp-2 text-base leading-relaxed">{report.description}</p>
                         
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            {new Date(report.created_at).toLocaleDateString('fr-FR')}
+                        <div className="flex items-center flex-wrap gap-4 text-sm text-gray-600">
+                          <span className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-lg">
+                            <Calendar className="h-4 w-4 text-gray-500" />
+                            <span className="font-medium">{new Date(report.created_at).toLocaleDateString('fr-FR', { 
+                              day: 'numeric', 
+                              month: 'long', 
+                              year: 'numeric' 
+                            })}</span>
                           </span>
-                          <span className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {report.location_text || report.region}
+                          <span className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-lg">
+                            <MapPin className="h-4 w-4 text-gray-500" />
+                            <span className="font-medium">{report.location_text || report.region}</span>
                           </span>
                           {!report.is_anonymous && (
-                            <span className="flex items-center">
-                              <User className="h-4 w-4 mr-1" />
-                              {language === 'fr' ? 'Contact autorisé' : 'Jokkoo jaayoo'}
+                            <span className="flex items-center space-x-2 bg-green-50 px-3 py-1.5 rounded-lg text-green-700">
+                              <User className="h-4 w-4" />
+                              <span className="font-medium">{language === 'fr' ? 'Contact autorisé' : 'Jokkoo jaayoo'}</span>
                             </span>
                           )}
                         </div>
                       </div>
 
-                                        
-                      <div className="ml-6 text-right space-y-2">
-                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(report.status)}`}>
+                      <div className="ml-6 text-right space-y-3 flex-shrink-0">
+                        <div className={`inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold border-2 shadow-sm ${getStatusColor(report.status)}`}>
                           {getStatusIcon(report.status)}
-                          <span className="ml-1">
+                          <span className="ml-2">
                             {statusOptions.find(s => s.value === report.status)?.label || report.status}
                           </span>
                         </div>
                         
-                        <div className="flex space-x-2">
                           <button
                             onClick={() => setExpandedReport(isExpanded ? null : report.id)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors flex items-center space-x-1"
+                          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                           >
                             {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                             <span>{language === 'fr' ? 'Détails' : 'Détail'}</span>
                           </button>
-                        </div>
                       </div>
                     </div>
 
                     {/* Expanded Details */}
                     {isExpanded && (
-                      <div className="border-t pt-4 mt-4">
+                      <div className="border-t-2 border-gray-100 pt-6 mt-6 bg-gradient-to-br from-gray-50 to-white rounded-xl p-6">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                          <div className="lg:col-span-2 space-y-4">
-                            <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">
-                                {language === 'fr' ? 'Description complète' : 'Ñakk bu moom'}
+                          <div className="lg:col-span-2 space-y-6">
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                              <h4 className="font-bold text-gray-900 mb-3 flex items-center space-x-2 text-lg">
+                                <FileText className="h-5 w-5 text-blue-600" />
+                                <span>{language === 'fr' ? 'Description complète' : 'Ñakk bu moom'}</span>
                               </h4>
-                              <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
+                              <p className="text-gray-700 leading-relaxed text-base">
                                 {report.description}
                               </p>
                             </div>
                             
-                            <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">
-                                {language === 'fr' ? 'Détails de l\'incident' : 'Détail yu xeey bi'}
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                              <h4 className="font-bold text-gray-900 mb-4 flex items-center space-x-2 text-lg">
+                                <Calendar className="h-5 w-5 text-orange-600" />
+                                <span>{language === 'fr' ? 'Détails de l\'incident' : 'Détail yu xeey bi'}</span>
                               </h4>
-                              <div className="bg-gray-50 p-3 rounded-lg space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">{language === 'fr' ? 'Date' : 'Bees'}:</span>
-                                  <span className="font-medium">{report.incident_date}</span>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                                  <span className="text-sm font-semibold text-gray-600 block mb-1">{language === 'fr' ? 'Date' : 'Bees'}</span>
+                                  <span className="font-bold text-gray-900">{report.incident_date}</span>
                                 </div>
                                 {report.incident_time && (
-                                  <div className="flex justify-between">
-                                    <span className="text-gray-600">{language === 'fr' ? 'Heure' : 'Waxtu'}:</span>
-                                    <span className="font-medium">{report.incident_time}</span>
+                                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                                    <span className="text-sm font-semibold text-gray-600 block mb-1">{language === 'fr' ? 'Heure' : 'Waxtu'}</span>
+                                    <span className="font-bold text-gray-900">{report.incident_time}</span>
                                   </div>
                                 )}
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600">{language === 'fr' ? 'Région' : 'Réegion'}:</span>
-                                  <span className="font-medium">{report.region}</span>
+                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200 md:col-span-2">
+                                  <span className="text-sm font-semibold text-gray-600 block mb-1">{language === 'fr' ? 'Région' : 'Réegion'}</span>
+                                  <span className="font-bold text-gray-900">{report.region}</span>
+                                </div>
+                              </div>
                                 </div>
 
                               {/* Médias attachés */}
                               {report.media_files && report.media_files.length > 0 && (
-                                <div>
-                                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                    {language === 'fr' ? 'Pièces jointes' : 'Jappante yi'}
-                                  </h3>
-                                  <div className="space-y-2">
-                                    {report.media_files.map((media) => (
+                              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                <h4 className="font-bold text-gray-900 mb-4 flex items-center space-x-2 text-lg">
+                                  <FileText className="h-5 w-5 text-purple-600" />
+                                  <span>{language === 'fr' ? 'Pièces jointes' : 'Jappante yi'}</span>
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  {report.media_files.map((media: any) => (
                                       <a
                                         key={media.id}
                                         href={media.file}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block text-blue-600 hover:underline"
+                                      className="flex items-center space-x-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-all duration-200 hover:shadow-md"
                                       >
-                                        📎 {media.file_name}
+                                      <div className="bg-blue-100 p-2 rounded-lg">
+                                        <FileText className="h-5 w-5 text-blue-600" />
+                                      </div>
+                                      <span className="text-blue-600 hover:text-blue-700 font-medium text-sm flex-1 truncate">{media.file_name}</span>
                                       </a>
                                     ))}
                                   </div>
@@ -550,56 +615,71 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
 
                               {/* Audio attaché */}
                               {report.voice_report && (
-                                <div>
-                                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                    {language === 'fr' ? 'Rapport vocal' : 'Rapport ci baat'}
-                                  </h3>
+                              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                <h4 className="font-bold text-gray-900 mb-4 flex items-center space-x-2 text-lg">
+                                  <FileText className="h-5 w-5 text-green-600" />
+                                  <span>{language === 'fr' ? 'Rapport vocal' : 'Rapport ci baat'}</span>
+                                </h4>
+                                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
                                   <audio controls className="w-full">
                                     <source src={report.voice_report.audio_file} type="audio/mpeg" />
                                     {language === 'fr' ? 'Votre navigateur ne supporte pas la lecture audio.' : 'Navigateur bi du may la jàngal ci baat.'}
                                   </audio>
                                 </div>
-                              )}
-                                
                               </div>
-                            </div>
+                            )}
                           </div>
                           
-                          <div className="space-y-4">
-                            <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">
-                                {language === 'fr' ? 'Actions' : 'Jëf'}
+                          <div className="space-y-6">
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 sticky top-4">
+                              <h4 className="font-bold text-gray-900 mb-4 flex items-center space-x-2 text-lg">
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                                <span>{language === 'fr' ? 'Actions' : 'Jëf'}</span>
                               </h4>
-                              <div className="space-y-2">
+                              <div className="space-y-3">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {language === 'fr' ? 'Modifier le statut' : 'Soppi statut bi'}
+                                </label>
                                 <select
                                   value={report.status}
                                   onChange={(e) => updateReportStatus(report.id, e.target.value)}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-medium bg-white cursor-pointer transition-all duration-200"
                                 >
                                   {statusOptions.slice(1).map(option => (
                                     <option key={option.value} value={option.value}>{option.label}</option>
                                   ))}
                                 </select>
-                    
                               </div>
                             </div>
                             
-                            <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">
-                                {language === 'fr' ? 'Informations' : 'Xibaar'}
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                              <h4 className="font-bold text-gray-900 mb-4 flex items-center space-x-2 text-lg">
+                                <AlertTriangle className="h-5 w-5 text-gray-600" />
+                                <span>{language === 'fr' ? 'Informations' : 'Xibaar'}</span>
                               </h4>
-                              <div className="bg-gray-50 p-3 rounded-lg space-y-2 text-xs">
-                                <div className="flex items-center space-x-2">
-                                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                  <span>ID: {report.id}</span>
+                              <div className="space-y-3">
+                                <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                  <div>
+                                    <span className="text-xs font-semibold text-gray-500 block">ID</span>
+                                    <span className="text-sm font-bold text-gray-900">
+                                      {report.id ? String(report.id).substring(0, 8) : 'N/A'}...
+                                    </span>
+                                  </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                  <span>{language === 'fr' ? 'Créé le' : 'Sos ci'}: {new Date(report.created_at).toLocaleString('fr-FR')}</span>
+                                <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-100">
+                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                  <div>
+                                    <span className="text-xs font-semibold text-gray-500 block">{language === 'fr' ? 'Créé le' : 'Sos ci'}</span>
+                                    <span className="text-sm font-bold text-gray-900">{new Date(report.created_at).toLocaleString('fr-FR')}</span>
+                                  </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                                  <span>{language === 'fr' ? 'Modifié le' : 'Soppi ci'}: {new Date(report.updated_at).toLocaleString('fr-FR')}</span>
+                                <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg border border-orange-100">
+                                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                  <div>
+                                    <span className="text-xs font-semibold text-gray-500 block">{language === 'fr' ? 'Modifié le' : 'Soppi ci'}</span>
+                                    <span className="text-sm font-bold text-gray-900">{new Date(report.updated_at).toLocaleString('fr-FR')}</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -618,13 +698,43 @@ const [complaints, setComplaints] = useState<CrimeReport[]>([]);
          ) : activeTab === "complaints" ? (
   <div className="space-y-4">
     {isLoading ? (
-      <div className="text-center py-12 text-gray-500">Chargement des plaintes...</div>
+              <div className="bg-white rounded-2xl shadow-xl p-16 text-center">
+                <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                <p className="text-gray-600 text-lg font-medium">
+                  {language === 'fr' ? 'Chargement des plaintes...' : 'Daje plaintes yi...'}
+                </p>
+              </div>
     ) : complaints.length === 0 ? (
-      <div className="text-center py-12 text-gray-500">Aucune plainte trouvée</div>
-    ) : (
-      complaints.map((complaint) => (
+              <div className="bg-white rounded-2xl shadow-xl p-16 text-center">
+                <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-6 rounded-full inline-block mb-6">
+                  <FileText className="h-16 w-16 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  {language === 'fr' ? 'Aucune plainte trouvée' : 'Amul plainte'}
+                </h3>
+                <p className="text-gray-600 text-lg">
+                  {language === 'fr' 
+                    ? 'Aucune plainte n\'a été soumise pour le moment.'
+                    : 'Amul plainte bu yónnee ci saa si.'
+                  }
+                </p>
+              </div>
+            ) : (
+              <div>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {language === 'fr' ? 'Liste des plaintes' : 'Liste plaintes yi'}
+                  </h3>
+                  <span className="text-sm font-medium text-green-600 bg-green-50 px-4 py-2 rounded-full">
+                    {complaints.length} {language === 'fr' ? 'plaintes' : 'plaintes'}
+                  </span>
+                </div>
+                <div className="space-y-4">
+                  {complaints.map((complaint) => (
         <ComplaintCard key={complaint.id} complaint={complaint} />
-      ))
+                  ))}
+                </div>
+              </div>
     )}
   </div>
 ) : activeTab === "roles" ? (
