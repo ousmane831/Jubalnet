@@ -20,7 +20,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Les utilisateurs ne voient que leurs propres plaintes
-        Les admins (is_staff, is_superuser ou role='admin') voient toutes les plaintes
+        Les admins (is_staff, is_superuser, role='admin' ou role='authority') voient toutes les plaintes
         """
         import logging
         logger = logging.getLogger('Complaint.views')
@@ -40,10 +40,10 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         logger.debug(f"Nombre total de plaintes: {queryset.count()}")
         
         # Vérification des permissions
-        is_admin = user.is_staff or user.is_superuser or getattr(user, 'role', None) == 'admin'
+        has_full_access = user.is_staff or user.is_superuser or getattr(user, 'role', None) in ['admin', 'authority']
         
-        if is_admin:
-            logger.debug("Mode administrateur: accès à toutes les plaintes")
+        if has_full_access:
+            logger.debug("Mode administrateur/authorité: accès à toutes les plaintes")
             result = queryset.order_by('-complaint_date')
         else:
             logger.debug(f"Mode utilisateur: filtrage pour {user.username}")
@@ -84,9 +84,14 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         complaint = self.get_object()
         user = request.user
 
-        # Vérifier les permissions : admin, staff, superuser ou le plaignant peuvent accéder
-        is_admin = user.is_staff or user.is_superuser or getattr(user, 'role', None) == 'admin'
-        if not (is_admin or complaint.submitted_by == user):
+        # Vérifier les permissions : admin, staff, superuser, authority ou le plaignant peuvent accéder
+        has_permission = (
+            user.is_staff or 
+            user.is_superuser or 
+            getattr(user, 'role', None) in ['admin', 'authority'] or
+            complaint.submitted_by == user
+        )
+        if not has_permission:
             return Response(
                 {"detail": "Vous n'avez pas la permission d'accéder à ces messages."},
                 status=status.HTTP_403_FORBIDDEN
@@ -151,8 +156,13 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         user = request.user
 
         # Vérifier les permissions
-        is_admin = user.is_staff or user.is_superuser or getattr(user, 'role', None) == 'admin'
-        if not (is_admin or complaint.submitted_by == user):
+        has_permission = (
+            user.is_staff or 
+            user.is_superuser or 
+            getattr(user, 'role', None) in ['admin', 'authority'] or
+            complaint.submitted_by == user
+        )
+        if not has_permission:
             return Response(
                 {"detail": "Vous n'avez pas la permission d'effectuer cette action."},
                 status=status.HTTP_403_FORBIDDEN
@@ -160,18 +170,27 @@ class ComplaintViewSet(viewsets.ModelViewSet):
 
         # Marquer les messages comme lus
         try:
-            is_admin = user.is_staff or user.is_superuser or getattr(user, 'role', None) == 'admin'
-            if is_admin:
-                # Admin marque les messages de l'utilisateur comme lus
+            has_permission = (
+                user.is_staff or 
+                user.is_superuser or 
+                getattr(user, 'role', None) in ['admin', 'authority']
+            )
+            if has_permission:
+                # Admin/Authority marque les messages de l'utilisateur comme lus
                 updated = complaint.messages.filter(
                     read=False,
                     sender=complaint.submitted_by
                 ).update(read=True)
             else:
-                # Utilisateur marque les messages de l'admin comme lus
+                # Utilisateur marque les messages de l'admin/authority comme lus
                 from django.contrib.auth import get_user_model
                 User = get_user_model()
-                admin_users = User.objects.filter(Q(is_staff=True) | Q(is_superuser=True) | Q(role='admin'))
+                admin_users = User.objects.filter(
+                    Q(is_staff=True) | 
+                    Q(is_superuser=True) | 
+                    Q(role='admin') | 
+                    Q(role='authority')
+                )
                 updated = complaint.messages.filter(
                     read=False,
                     sender__in=admin_users
