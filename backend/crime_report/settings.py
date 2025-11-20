@@ -181,6 +181,16 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@denonciation.sn')
 
 # Logging configuration
+import os
+
+# Logging configuration
+import os
+
+# Assure-toi que le dossier logs existe
+LOGS_DIR = os.path.join(BASE_DIR, 'backend', 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)  # crée le dossier s'il n'existe pas
+
+# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -198,7 +208,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'c:/Users/HP ELITEBOOK G6/Desktop/Jubbalnet/backend/logs/debug.log',
+            'filename': os.path.join(LOGS_DIR, 'debug.log'),
             'formatter': 'verbose',
         },
     },
