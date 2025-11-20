@@ -1,11 +1,21 @@
 from django.contrib import admin
-from .models import Complaint, ComplaintAttachment
+from .models import Complaint, ComplaintAttachment, ComplaintMessage
 
 class ComplaintAttachmentInline(admin.TabularInline):
     model = ComplaintAttachment
     extra = 1  # nombre de lignes vides supplémentaires
     fields = ('file', 'uploaded_at')
     readonly_fields = ('uploaded_at',)
+
+class ComplaintMessageInline(admin.TabularInline):
+    model = ComplaintMessage
+    extra = 0
+    fields = ('sender', 'message', 'created_at', 'read')
+    readonly_fields = ('sender', 'created_at')
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False  # Les messages sont créés via l'API uniquement
 
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
@@ -66,5 +76,18 @@ class ComplaintAdmin(admin.ModelAdmin):
     # Champs readonly (ici la date de la plainte)
     readonly_fields = ('complaint_date',)
 
-    # 🔹 Ajouter l'inline pour les pièces jointes
-    inlines = [ComplaintAttachmentInline]
+    # 🔹 Ajouter les inlines pour les pièces jointes et messages
+    inlines = [ComplaintAttachmentInline, ComplaintMessageInline]
+
+
+@admin.register(ComplaintMessage)
+class ComplaintMessageAdmin(admin.ModelAdmin):
+    list_display = ('complaint', 'sender', 'created_at', 'read', 'message_preview')
+    list_filter = ('read', 'created_at', 'complaint')
+    search_fields = ('message', 'sender__username', 'complaint__plaintiff_first_name')
+    readonly_fields = ('complaint', 'sender', 'created_at')
+    list_editable = ('read',)
+
+    def message_preview(self, obj):
+        return obj.message[:50] + '...' if len(obj.message) > 50 else obj.message
+    message_preview.short_description = 'Aperçu du message'

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FileText, Calendar, MapPin, ChevronDown, ChevronRight } from "lucide-react";
+import { FileText, Calendar, MapPin, ChevronDown, ChevronRight, MessageCircle, Bell } from "lucide-react";
+import { ComplaintMessages } from "./ComplaintMessages";
 
 interface Attachment {
   file: string;
@@ -7,6 +8,7 @@ interface Attachment {
 }
 
 interface Complaint {
+  id?: string;
   plaintiff_first_name: string;
   plaintiff_last_name: string;
   facts: string;
@@ -27,6 +29,7 @@ interface Complaint {
   submitted_by?: {
     username?: string;
   };
+  unread_messages_count?: number;
 }
 
 interface ComplaintCardProps {
@@ -35,9 +38,11 @@ interface ComplaintCardProps {
 
 export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMessagesOpen, setIsMessagesOpen] = useState(false);
 
   // ✅ ici attachments est bien typé
   const attachments: Attachment[] = complaint.attachments || [];
+  const unreadCount = complaint.unread_messages_count || 0;
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden">
@@ -69,13 +74,29 @@ export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
           </div>
           <p className="text-gray-600 line-clamp-2 text-base leading-relaxed mb-4">{complaint.facts}</p>
         </div>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="ml-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex-shrink-0"
-        >
-          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          <span>{isExpanded ? "Masquer les détails" : "Voir les détails"}</span>
-        </button>
+        <div className="ml-4 flex gap-2 flex-shrink-0">
+          {complaint.id && (
+            <button
+              onClick={() => setIsMessagesOpen(true)}
+              className="relative bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>Messages</span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+          )}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            <span>{isExpanded ? "Masquer les détails" : "Voir les détails"}</span>
+          </button>
+        </div>
       </div>
 
       {isExpanded && (
@@ -224,6 +245,16 @@ export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
             )}
           </div>
         </div>
+      )}
+
+      {/* Messages Modal */}
+      {complaint.id && (
+        <ComplaintMessages
+          complaintId={complaint.id}
+          complaintTitle={`Plainte de ${complaint.plaintiff_first_name} ${complaint.plaintiff_last_name}`}
+          isOpen={isMessagesOpen}
+          onClose={() => setIsMessagesOpen(false)}
+        />
       )}
     </div>
   );

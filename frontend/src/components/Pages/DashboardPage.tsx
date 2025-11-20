@@ -37,6 +37,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onPageChange }) =>
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedReport, setExpandedReport] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [statistics, setStatistics] = useState({
     total_reports: 0,
     resolved_reports: 0,
@@ -61,23 +62,112 @@ const [complaints, setComplaints] = useState<any[]>([]);
 
  const loadDashboardData = async () => {
   try {
+    console.log('Début du chargement des données du tableau de bord...');
     setIsLoading(true);
-    const [reportsData, complaintsData, categoriesData, statsData] = await Promise.all([
-      apiService.getReports(),
-      apiService.getComplaints(),   // 🔹 nouvel appel
-      apiService.getCategories(),
-      apiService.getStatistics()
-    ]);
+    setError(null);
     
-    setReports(reportsData.results || reportsData);
-    setComplaints(complaintsData.results || complaintsData); // 🔹 on stocke les plaintes
-    setCategories(categoriesData);
-    setStatistics({
-      ...statsData,
-      urgent_reports: (reportsData.results || reportsData).filter((r: CrimeReport) => r.priority === 'urgent').length
-    });
+    // Vérifier d'abord si l'utilisateur est connecté
+    if (!isAuthenticated || !user) {
+      console.error('Utilisateur non authentifié');
+      setError('Vous devez être connecté pour accéder à cette page');
+      setIsLoading(false);
+      return;
+    }
+    
+    console.log('Utilisateur connecté:', user);
+    
+    // Récupérer les plaintes avec gestion d'erreur séparée
+    let complaintsData = { results: [] };
+    try {
+      console.log('Tentative de récupération des plaintes...');
+      complaintsData = await apiService.getComplaints();
+      console.log('Plaintes récupérées avec succès:', complaintsData);
+    } catch (complaintError) {
+      console.error('Erreur lors de la récupération des plaintes:', complaintError);
+      setError('Erreur lors du chargement des plaintes');
+    }
+    
+    // Récupérer les autres données en parallèle avec gestion d'erreur
+    let reportsData = { results: [] };
+    let categoriesData = { results: [] };
+    let statsData = {};
+    
+    try {
+      [reportsData, categoriesData, statsData] = await Promise.all([
+        apiService.getReports().catch(e => {
+          console.error('Erreur lors de la récupération des signalements:', e);
+          return { results: [] };
+        }),
+        apiService.getCategories().catch(e => {
+          console.error('Erreur lors de la récupération des catégories:', e);
+          return { results: [] };
+        }),
+        apiService.getStatistics().catch(e => {
+          console.error('Erreur lors de la récupération des statistiques:', e);
+          return {};
+        })
+      ]);
+      
+      console.log('Données reçues - Signalements:', reportsData);
+      console.log('Données reçues - Plaintes:', complaintsData);
+      
+      // Gestion des plaintes avec vérification plus robuste
+      let complaintsList = [];
+      if (Array.isArray(complaintsData)) {
+        complaintsList = complaintsData;
+      } else if (complaintsData && Array.isArray(complaintsData.results)) {
+        complaintsList = complaintsData.results;
+      }
+      
+      console.log(`Nombre de plaintes après traitement: ${complaintsList.length}`);
+      
+      // Mise à jour des états avec vérification de type
+      setReports(Array.isArray(reportsData) ? reportsData : (reportsData?.results || []));
+      setComplaints(complaintsList);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : (categoriesData?.results || []));
+      
+      // Calcul des statistiques
+      const reports = Array.isArray(reportsData) ? reportsData : (reportsData?.results || []);
+      setStatistics({
+        total_reports: reports.length,
+        resolved_reports: reports.filter((r: any) => r.status === 'resolved').length,
+        in_progress_reports: reports.filter((r: any) => r.status === 'investigating').length,
+        urgent_reports: reports.filter((r: any) => r.priority === 'urgent').length
+      });
+      
+    } catch (error) {
+      console.error('Erreur lors du chargement des données:', error);
+      setError('Une erreur est survenue lors du chargement des données');
+    }
   } catch (error) {
     console.error('Erreur lors du chargement des données:', error);
+    
+    // Gestion plus détaillée des erreurs
+    let errorMessage = 'Une erreur est survenue lors du chargement des données';
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      
+      if ('response' in error) {
+        // Erreur avec réponse HTTP
+        const response = (error as any).response;
+        console.error('Détails de l\'erreur HTTP:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data
+        });
+        
+        if (response.status === 401) {
+          errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+        } else if (response.status === 403) {
+          errorMessage = 'Vous n\'avez pas les permissions nécessaires pour accéder à cette ressource.';
+        } else if (response.data?.detail) {
+          errorMessage = response.data.detail;
+        }
+      }
+    }
+    
+    setError(errorMessage);
   } finally {
     setIsLoading(false);
   }

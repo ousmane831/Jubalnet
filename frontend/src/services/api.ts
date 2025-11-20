@@ -1,6 +1,9 @@
-const API_BASE_URL = 'http://10.121.221.230:8001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+                     (window.location.hostname === 'localhost' 
+                        ? 'http://localhost:8000/api' 
+                        : 'http://10.121.221.230:8001/api');
 
-
+console.log('API Base URL:', API_BASE_URL);
 
 // ---------------- Types ---------------- //
 export interface ApiResponse<T> {
@@ -86,13 +89,22 @@ class ApiService {
   }
 
   private getHeaders(): HeadersInit {
-  const token = localStorage.getItem('auth_token'); // toujours frais
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
-  if (token) headers['Authorization'] = `Token ${token}`;
-  return headers;
-}
+    const token = localStorage.getItem('auth_token');
+    console.log('Token from localStorage:', token ? 'PRESENT' : 'MISSING');
+    
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Token ${token}`;
+      console.log('Authorization header set with token');
+    } else {
+      console.warn('No auth token found in localStorage');
+    }
+    
+    return headers;
+  }
 
 
   private getMultipartHeaders(): HeadersInit {
@@ -105,10 +117,51 @@ class ApiService {
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      let errorDetails: any = {};
+      
+      try {
+        // Essayer d'extraire le message d'erreur de la réponse
+        const errorData = await response.json().catch(() => ({}));
+        errorDetails = errorData;
+        
+        // Si la réponse contient un message d'erreur, l'utiliser
+        if (errorData.detail) {
+          errorMessage = errorData.detail;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.non_field_errors) {
+          errorMessage = errorData.non_field_errors.join(', ');
+        } else if (typeof errorData === 'object') {
+          // Si c'est un objet, essayer d'afficher les erreurs de champ
+          const fieldErrors = Object.entries(errorData)
+            .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+            .join('; ');
+          if (fieldErrors) errorMessage = fieldErrors;
+        }
+        
+        console.error('API Error Details:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url,
+          error: errorData
+        });
+      } catch (e) {
+        console.error('Could not parse error response as JSON:', e);
+      }
+      
+      const error = new Error(errorMessage) as any;
+      error.status = response.status;
+      error.details = errorDetails;
+      throw error;
     }
-    return response.json();
+    
+    try {
+      return await response.json();
+    } catch (e) {
+      console.error('Failed to parse response as JSON:', e);
+      throw new Error('Erreur lors de la lecture de la réponse du serveur');
+    }
   }
 
   // ---------------- Auth ---------------- //
@@ -268,7 +321,7 @@ class ApiService {
   }
 
 // ---------------- Complaints ---------------- //
-async createComplaint(complaintData: ComplaintData, attachments: File[]): Promise<any> {
+async createComplaint(complaintData: ComplaintData, attachments: File[] = []): Promise<any> {
   const formData = new FormData();
 
   // Ajout de toutes les données
@@ -279,8 +332,8 @@ async createComplaint(complaintData: ComplaintData, attachments: File[]): Promis
   });
 
   // Fichiers joints
-  if (complaintData.attachments) {
-    complaintData.attachments.forEach(file => {
+  if (attachments) {
+    attachments.forEach(file => {
       formData.append("attachments", file);
     });
   }
@@ -304,20 +357,46 @@ async getComplaints(params?: {
   search?: string;
   page?: number;
 }): Promise<PaginatedResponse<any>> {
-  const searchParams = new URLSearchParams();
+  try {
+    console.log('Début de la récupération des plaintes avec les paramètres:', params);
+    const searchParams = new URLSearchParams();
 
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value) searchParams.append(key, value.toString());
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const queryString = searchParams.toString();
+    const url = `${API_BASE_URL}/complaints/${queryString ? '?' + queryString : ''}`;
+    
+    console.log('URL de la requête:', url);
+    
+    const response = await fetch(url, {
+      headers: this.getHeaders(),
     });
+
+    console.log('Réponse reçue, statut:', response.status);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Erreur lors de la récupération des plaintes:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url,
+        error: errorData
+      });
+    }
+
+    const data = await this.handleResponse<PaginatedResponse<any>>(response);
+    console.log('Données des plaintes reçues:', data);
+    return data;
+  } catch (error) {
+    console.error('Erreur dans getComplaints:', error);
+    throw error;
   }
-
-  const url = `${API_BASE_URL}/complaints/${searchParams.toString() ? '?' + searchParams.toString() : ''}`;
-  const response = await fetch(url, {
-    headers: this.getHeaders(),
-  });
-
-  return this.handleResponse<PaginatedResponse<any>>(response);
 }
 
 async getComplaint(id: string): Promise<any> {
@@ -336,18 +415,54 @@ async updateComplaintStatus(complaintId: string, status: string, comment?: strin
   return this.handleResponse(response);
 }
 
+// ---------------- Complaint Messages ---------------- //
+async getComplaintMessages(complaintId: string): Promise<any[]> {
+  const response = await fetch(`${API_BASE_URL}/complaints/${complaintId}/messages/`, {
+    headers: this.getHeaders(),
+  });
+  return this.handleResponse<any[]>(response);
+}
+
+async sendComplaintMessage(complaintId: string, message: string): Promise<any> {
+  const formData = new FormData();
+  formData.append('message', message);
+  formData.append('complaint', complaintId); // Ajout de l'ID de la plainte
+  
+  const response = await fetch(`${API_BASE_URL}/complaints/${complaintId}/messages/`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${this.token}`
+      // Ne pas définir Content-Type, il sera défini automatiquement avec la bonne boundary
+    },
+    body: formData
+  });
+  return this.handleResponse(response);
+}
+
+async markComplaintMessagesRead(complaintId: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/complaints/${complaintId}/mark_messages_read/`, {
+    method: 'POST',
+    headers: this.getHeaders(),
+  });
+  return this.handleResponse(response);
+}
+
 
   // ---------------- Statistics ---------------- //
 async getStatistics(): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/reports/statistics/`, {
-    headers: this.getHeaders(),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
   return this.handleResponse(response);
 }
 
 async getCrimeByRegion(): Promise<any[]> {
   const response = await fetch(`${API_BASE_URL}/reports/statistics/regions/`, {
-    headers: this.getHeaders(),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
   return this.handleResponse<any[]>(response);
 }

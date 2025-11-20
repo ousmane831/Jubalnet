@@ -207,10 +207,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400/20 rounded-full -mr-48 -mt-48"></div>
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-400/20 rounded-full -ml-36 -mb-36"></div>
         
-        <div className="relative container mx-auto px-6 py-20 sm:py-24 lg:py-32">
+        <div className="relative container mx-auto px-4 py-6 sm:py-8 lg:py-10">
+
           <div className="text-center max-w-5xl mx-auto">
             {/* Logo/Badge */}
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-2">
+
               <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl shadow-2xl">
                 <Shield className="h-16 w-16 sm:h-20 sm:w-20 text-yellow-300" />
               </div>
@@ -237,45 +239,42 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
             </p>
             
             {/* Badges d'information */}
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center space-x-2">
-                <Sparkles className="h-5 w-5" />
-                <span className="font-semibold">{language === 'fr' ? '100% Gratuit' : '100% Bés'}</span>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center space-x-2">
-                <Lock className="h-5 w-5" />
-                <span className="font-semibold">{language === 'fr' ? '100% Sécurisé' : '100% Jëkk'}</span>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center space-x-2">
-                <Eye className="h-5 w-5" />
-                <span className="font-semibold">{language === 'fr' ? 'Anonyme' : 'Sutura'}</span>
-              </div>
-            </div>
-            
-            {/* Boutons d'action */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => onPageChange('report')}
-                className="group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 rounded-xl text-lg font-bold transition-all duration-200 transform hover:scale-105 shadow-2xl hover:shadow-red-500/50 flex items-center justify-center space-x-3"
-              >
-                <AlertTriangle className="w-6 h-6" />
-                <span>
-                  {language === 'fr' ? 'Signalement d\'Urgence' : '🚨 Baxal bu Caxaan'}
-                </span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+<div className="flex flex-wrap justify-center gap-3 mb-6">
+  <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center space-x-2">
+    <Sparkles className="h-5 w-5" />
+    <span className="font-semibold">{language === 'fr' ? '100% Gratuit' : '100% Bés'}</span>
+  </div>
+  <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center space-x-2">
+    <Lock className="h-5 w-5" />
+    <span className="font-semibold">{language === 'fr' ? '100% Sécurisé' : '100% Jëkk'}</span>
+  </div>
+  <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center space-x-2">
+    <Eye className="h-5 w-5" />
+    <span className="font-semibold">{language === 'fr' ? 'Anonyme' : 'Sutura'}</span>
+  </div>
+</div>
 
-              <button
-                onClick={() => onPageChange('plaint')}
-                className="group bg-white/20 backdrop-blur-sm hover:bg-white/30 border-2 border-white/50 hover:border-white text-white px-8 py-4 rounded-xl text-lg font-bold transition-all duration-200 transform hover:scale-105 shadow-xl flex items-center justify-center space-x-3"
-              >
-                <Shield className="w-6 h-6" />
-                <span>
-                  {language === 'fr' ? 'Déposer une Plainte' : 'Yónnee Plainte'}
-                </span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
+{/* Boutons d'action */}
+<div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
+  <button
+    onClick={() => onPageChange('report')}
+    className="group bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 rounded-xl text-lg font-bold transition-all duration-200 transform hover:scale-105 shadow-2xl hover:shadow-red-500/50 flex items-center justify-center space-x-3"
+  >
+    <AlertTriangle className="w-6 h-6" />
+    <span>{language === 'fr' ? 'Signalement d\'Urgence' : '🚨 Baxal bu Caxaan'}</span>
+    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+  </button>
+
+  <button
+    onClick={() => onPageChange('plaint')}
+    className="group bg-white/20 backdrop-blur-sm hover:bg-white/30 border-2 border-white/50 hover:border-white text-white px-8 py-4 rounded-xl text-lg font-bold transition-all duration-200 transform hover:scale-105 shadow-xl flex items-center justify-center space-x-3"
+  >
+    <Shield className="w-6 h-6" />
+    <span>{language === 'fr' ? 'Déposer une Plainte' : 'Yónnee Plainte'}</span>
+    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+  </button>
+</div>
+
           </div>
         </div>
       </section>

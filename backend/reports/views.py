@@ -152,6 +152,7 @@ REGION_COORDINATES = {
 }
 
 class CrimeByRegionAPIView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request):
         stats = (
             CrimeReport.objects

@@ -44,3 +44,33 @@ class ComplaintAttachment(models.Model):
 
     def __str__(self):
         return self.file.name
+
+
+class ComplaintMessage(models.Model):
+    """Modèle pour les messages internes liés à une plainte"""
+    complaint = models.ForeignKey(
+        'Complaint', 
+        related_name='messages', 
+        on_delete=models.CASCADE,
+        verbose_name="Plainte"
+    )
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Expéditeur"
+    )
+    message = models.TextField(verbose_name="Message")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
+    read = models.BooleanField(default=False, verbose_name="Lu")
+
+    class Meta:
+        ordering = ['created_at']
+        verbose_name = "Message de plainte"
+        verbose_name_plural = "Messages de plaintes"
+        indexes = [
+            models.Index(fields=['complaint', 'created_at']),
+            models.Index(fields=['complaint', 'read']),
+        ]
+
+    def __str__(self):
+        return f"Message de {self.sender.username} pour plainte #{self.complaint.id}"

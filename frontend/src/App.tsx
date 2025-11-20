@@ -12,6 +12,7 @@ import { PreventionPage } from './components/Pages/PreventionPage';
 import { DashboardPage } from './components/Pages/DashboardPage';
 import Confidentialite from './components/Pages/Confidentialite';
 import { ComplaintForm } from './components/Pages/ComplaintForm';
+import { MyComplaintsPage } from './components/Pages/MyComplaintsPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -37,6 +38,8 @@ function App() {
         return <DashboardPage onPageChange={setCurrentPage} />;
     case 'plaint':
         return <ComplaintForm onPageChange={setCurrentPage} />;
+    case 'my-complaints':
+        return <MyComplaintsPage onPageChange={setCurrentPage} />;
     default:
       return <HomePage onPageChange={setCurrentPage} />;
   }

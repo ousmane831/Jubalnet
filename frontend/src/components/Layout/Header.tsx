@@ -29,7 +29,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
   const navigationItems = [
     { id: 'home', label: t('nav.home'), icon: Home },
     { id: 'report', label: t('nav.report'), icon: FileText },
-    ...(isAuthenticated ? [{ id: 'my-reports', label: t('nav.my_reports'), icon: FileText }] : []),
+    ...(isAuthenticated ? [
+      { id: 'my-reports', label: t('nav.my_reports'), icon: FileText },
+      { id: 'my-complaints', label: language === 'fr' ? 'Mes Plaintes' : 'Sama Plaintes', icon: FileText }
+    ] : []),
     { id: 'prevention', label: t('nav.prevention'), icon: Shield },
     { id: 'emergency', label: t('nav.emergency'), icon: Phone },
     ...(user && ["authority", "admin"].includes(user.role) ? [
