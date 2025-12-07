@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { ReportClassifier } from '../../utils/reportClassifier';
 import { 
   FileText, 
   Mic, 
@@ -28,7 +29,9 @@ import {
   HelpCircle,
   Map as MapIcon,
   Bot,
-  VolumeX
+  VolumeX,
+  Monitor,
+  Badge
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { apiService } from '../../services/api';
@@ -57,6 +60,8 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
   const [otherCrimeSpecification, setOtherCrimeSpecification] = useState('');
   const [categories, setCategories] = useState<CrimeCategory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedAuthority, setSelectedAuthority] = useState<any>(null);
+  const [authorityCategories, setAuthorityCategories] = useState<CrimeCategory[]>([]);
   
   // État pour l'assistant vocal
   const [isAssistantActive, setIsAssistantActive] = useState(true);
@@ -69,7 +74,7 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const [formData, setFormData] = useState({
-    category: 0,
+    category: '',
     title: '',
     description: '',
     location: '',
@@ -99,6 +104,14 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
     
     loadCategories();
   }, []);
+
+  // Redéterminer l'autorité quand la catégorie ou la région change
+  useEffect(() => {
+    if (formData.category && formData.region) {
+      // TODO: Implement authority redirection logic
+      setSelectedAuthority(null);
+    }
+  }, [formData.category, formData.region, formData.description]);
 
   // Fonction pour parler avec l'assistant vocal
   const speakWithAssistant = (text: string, autoPlay: boolean = true) => {
@@ -366,7 +379,7 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
       case 2:
         return reportMode !== null;
       case 3:
-        return reportMode === 'voice' ? !!audioBlob : (reportMode === 'written' && formData.category > 0);
+        return reportMode === 'voice' ? !!audioBlob : (reportMode === 'written' && formData.category !== '');
       case 4:
         return reportMode === 'voice' ? true : !!(formData.title && formData.description && formData.region && formData.date);
       case 5:
@@ -400,7 +413,31 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
         await apiService.loginAnonymous(language);
     }
 
-      // Pour le mode vocal, utiliser les données minimales avec valeurs par défaut
+    // Déterminer l'autorité appropriée en utilisant la classification
+    let assignedDepartment = 'police'; // Valeur par défaut
+    
+    if (reportMode === 'written') {
+      const selectedCategory = categories.find(cat => cat.id === formData.category);
+      const categoryName = selectedCategory?.name_fr || '';
+      
+      const classification = ReportClassifier.classifyReport(
+        categoryName,
+        formData.region || 'Dakar',
+        formData.description
+      );
+      
+      assignedDepartment = classification.department;
+    } else {
+      // Pour le mode vocal, utiliser une classification basique
+      const classification = ReportClassifier.classifyReport(
+        'Autres',
+        formData.region || 'Dakar',
+        'Signalement vocal'
+      );
+      assignedDepartment = classification.department;
+    }
+
+    // Pour le mode vocal, utiliser les données minimales avec valeurs par défaut
     let reportData: any = {
       location_text: formData.location || undefined,
       latitude: gpsLocation?.lat,
@@ -412,12 +449,17 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
         is_anonymous: isAnonymous || reportMode === 'anonymous',
         contact_allowed: reportMode === 'voice' ? false : formData.contactAllowed, // Par défaut false pour vocal
       language: language,
+      // Ajouter le département assigné pour classification future
+      assigned_department: assignedDepartment,
     };
 
       if (reportMode === 'written') {
+      // Trouver la catégorie sélectionnée
+      const selectedCategory = categories.find(cat => cat.id === formData.category);
+      
       reportData = {
         ...reportData,
-          category: formData.category,
+          category: Number(selectedCategory?.id) || 1, // Utiliser directement l'ID
         title: formData.title,
         description: formData.description,
           other_crime_specification: otherCrimeSpecification || undefined,
@@ -435,7 +477,7 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
         // Mode anonyme sans audio (avec formulaire)
         reportData = {
           ...reportData,
-          category: formData.category || categories[0]?.id || 1,
+          category: Number(formData.category) || 1, // Utiliser directement l'ID
           title: formData.title || 'Signalement anonyme',
           description: formData.description || 'Signalement anonyme',
           other_crime_specification: otherCrimeSpecification || undefined,
@@ -529,7 +571,7 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         {/* Header */}
-      <header className="bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white py-12 shadow-xl">
+      <header className="bg-gradient-to-br from-green-900 via-green-800 to-green-900 text-white py-12 shadow-xl">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white bg-opacity-20 backdrop-blur-md p-6 rounded-3xl shadow-2xl inline-block mb-6 animate-fade-in">
             <Shield className="h-16 w-16 text-white mx-auto" />
@@ -839,45 +881,64 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
                   </p>
             </div>
 
+            {/* Affichage de l'autorité déterminée */}
+            {selectedAuthority && (
+              <div className="mb-6 p-4 rounded-xl border-2 border-blue-200 bg-blue-50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{ backgroundColor: selectedAuthority.color }}>
+                    <Shield className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900">
+                      {language === 'fr' ? selectedAuthority.name_fr : selectedAuthority.name_wo}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {language === 'fr' ? selectedAuthority.description_fr : selectedAuthority.description_wo}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.map((category) => {
-                const categoryNameLower = (language === 'fr' ? category.name_fr : category.name_wo).toLowerCase();
                 const getIcon = () => {
-                  if (categoryNameLower.includes('blanchiment') || categoryNameLower.includes('capital')) return <DollarSign className="w-8 h-8" />;
-                  if (categoryNameLower.includes('corruption')) return <Briefcase className="w-8 h-8" />;
-                  if (categoryNameLower.includes('harcèlement') || categoryNameLower.includes('harcelement')) return <MessageCircle className="w-8 h-8" />;
-                  if (categoryNameLower.includes('usurpation') || categoryNameLower.includes('identité') || categoryNameLower.includes('identite')) return <CreditCard className="w-8 h-8" />;
-                  if (categoryNameLower.includes('violence') || categoryNameLower.includes('agression')) return <Zap className="w-8 h-8" />;
-                  if (categoryNameLower.includes('vol') || categoryNameLower.includes('cambriolage')) return <Home className="w-8 h-8" />;
+                  if (category.authority_type === 'cdp') return <CreditCard className="w-8 h-8" />;
+                  if (category.authority_type === 'dsc') return <Monitor className="w-8 h-8" />;
+                  if (category.authority_type === 'police') return <Badge className="w-8 h-8" />;
+                  if (category.authority_type === 'gendarmerie') return <Shield className="w-8 h-8" />;
                   return <HelpCircle className="w-8 h-8" />;
                 };
+
+                const authority = null; // TODO: Implement authority lookup
 
                 return (
                   <button
               key={category.id}
                     type="button"
                     onClick={() => {
-                      setFormData(prev => ({ ...prev, category: Number(category.id) }));
-                      if (!category.requires_specification) {
-                        setTimeout(() => nextStep(), 300);
-                      }
+                      setFormData(prev => ({ ...prev, category: category.id }));
+                      
+                      // TODO: Update authority selection logic
+                      
+                      setTimeout(() => nextStep(), 300);
                     }}
                     className={`p-6 rounded-xl border-4 transition-all duration-300 transform hover:scale-105 ${
-                formData.category === Number(category.id)
-                        ? `border-${category.color.replace('#', '')} bg-${category.color.replace('#', '')}50 shadow-2xl ring-4 ring-${category.color.replace('#', '')}200`
+                formData.category === category.id
+                        ? `border-${authority?.color.replace('#', '')} bg-${authority?.color.replace('#', '')}50 shadow-2xl ring-4 ring-${authority?.color.replace('#', '')}200`
                         : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg'
                     }`}
                     style={{
-                      borderColor: formData.category === Number(category.id) ? category.color : undefined,
-                      backgroundColor: formData.category === Number(category.id) ? `${category.color}15` : undefined,
+                      borderColor: formData.category === category.id ? authority?.color : undefined,
+                      backgroundColor: formData.category === category.id ? `${authority?.color}15` : undefined,
                     }}
                   >
                     <div className="flex flex-col items-center text-center">
                       <div 
                         className="p-4 rounded-full mb-3"
                         style={{ 
-                          backgroundColor: formData.category === Number(category.id) ? category.color : '#f3f4f6',
-                          color: formData.category === Number(category.id) ? 'white' : '#6b7280'
+                          backgroundColor: formData.category === category.id ? authority?.color : '#f3f4f6',
+                          color: formData.category === category.id ? 'white' : '#6b7280'
                         }}
                       >
                         {getIcon()}
@@ -885,7 +946,10 @@ export const ReportPage: React.FC<ReportPageProps> = ({ onPageChange }) => {
                       <h3 className="font-bold text-gray-900 mb-1">
                   {language === 'fr' ? category.name_fr : category.name_wo}
                       </h3>
-                      {formData.category === Number(category.id) && (
+                      <p className="text-xs text-gray-500 mb-2">
+                        {authority?.name_fr}
+                      </p>
+                      {formData.category === category.id && (
                         <CheckCircle className="w-6 h-6 text-green-600 mt-2" />
                       )}
               </div>

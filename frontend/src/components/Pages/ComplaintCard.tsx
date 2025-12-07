@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText, Calendar, MapPin, ChevronDown, ChevronRight, MessageCircle, Bell } from "lucide-react";
+import { FileText, Calendar, MapPin, ChevronDown, ChevronRight, MessageCircle, Download } from "lucide-react";
 import { ComplaintMessages } from "./ComplaintMessages";
 
 interface Attachment {
@@ -39,6 +39,258 @@ interface ComplaintCardProps {
 export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
+
+  const exportToPDF = async () => {
+    console.log('Export PDF clicked for complaint:', complaint.id);
+    
+    try {
+      // Créer un nouveau document PDF
+      const pdfDoc = await createPDFDocument();
+      
+      // Ajouter le contenu de la plainte
+      await addComplaintContent(pdfDoc, complaint);
+      
+      // Télécharger le PDF
+      await downloadPDF(pdfDoc, `plainte_${complaint.id || 'unknown'}.pdf`);
+      
+    } catch (error) {
+      console.error('Erreur lors de la génération du PDF:', error);
+      // Fallback: export texte si PDF échoue
+      exportTextFallback();
+    }
+  };
+
+  const createPDFDocument = async () => {
+    // Utiliser l'API PDF du navigateur si disponible
+    if ('pdf' in window && (window as any).pdf) {
+      return new (window as any).pdf.PDFDocument();
+    }
+    
+    // Sinon, créer un PDF manuellement avec jsPDF-like approach
+    return createSimplePDF();
+  };
+
+  const createSimplePDF = () => {
+    interface PageItem {
+      text: string;
+      x: number;
+      y: number;
+    }
+    
+    return {
+      pages: [] as PageItem[][],
+      addPage: function() {
+        this.pages.push([]);
+        return this;
+      },
+      text: function(text: string, x: number, y: number) {
+        if (this.pages.length === 0) this.addPage();
+        this.pages[this.pages.length - 1].push({ text, x, y });
+        return this;
+      },
+      save: function() {
+        return this.generatePDFString();
+      },
+      generatePDFString: function() {
+        let pdfContent = '%PDF-1.4\n';
+        const pageContent = this.pages.map(page => 
+          page.map(item => `BT /F1 12 Tf ${item.x} ${item.y} Td (${item.text}) Tj ET`).join('\n')
+        ).join('\n');
+        
+        pdfContent += '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
+        pdfContent += '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n';
+        pdfContent += '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n';
+        pdfContent += '4 0 obj\n<< /Length ' + pageContent.length + ' >>\nstream\n' + pageContent + '\nendstream\nendobj\n';
+        pdfContent += 'xref\n0 5\n0000000000 65535 f\n0000000010 00000 n\n0000000079 00000 n\n0000000173 00000 n\n0000000301 00000 n\n';
+        pdfContent += 'trailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n' + (pdfContent.length + 1) + '\n%%EOF';
+        
+        return pdfContent;
+      }
+    };
+  };
+
+  const addComplaintContent = async (pdfDoc: any, complaint: Complaint) => {
+    pdfDoc.addPage();
+    
+    let yPosition = 750;
+    const lineHeight = 20;
+    const leftMargin = 50;
+    
+    // Titre
+    pdfDoc.text("Rapport de Plainte", leftMargin, yPosition);
+    yPosition -= lineHeight * 2;
+    
+    // Informations du demandeur
+    pdfDoc.text("DEMANDEUR:", leftMargin, yPosition);
+    yPosition -= lineHeight;
+    pdfDoc.text(`Nom: ${complaint.plaintiff_first_name} ${complaint.plaintiff_last_name}`, leftMargin + 20, yPosition);
+    yPosition -= lineHeight;
+    pdfDoc.text(`Date: ${complaint.complaint_date}`, leftMargin + 20, yPosition);
+    yPosition -= lineHeight;
+    pdfDoc.text(`Ville: ${complaint.complaint_city}`, leftMargin + 20, yPosition);
+    yPosition -= lineHeight * 2;
+    
+    // Informations du défendeur
+    pdfDoc.text("DEFENDEUR:", leftMargin, yPosition);
+    yPosition -= lineHeight;
+    if (complaint.defendant_unknown) {
+      pdfDoc.text("Statut: Inconnu", leftMargin + 20, yPosition);
+    } else {
+      pdfDoc.text(`Nom: ${complaint.defendant_first_name} ${complaint.defendant_last_name}`, leftMargin + 20, yPosition);
+      yPosition -= lineHeight;
+      if (complaint.defendant_birth_date) {
+        pdfDoc.text(`Date de naissance: ${complaint.defendant_birth_date}`, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      }
+      if (complaint.defendant_birth_place) {
+        pdfDoc.text(`Lieu de naissance: ${complaint.defendant_birth_place}`, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      }
+      if (complaint.defendant_nationality) {
+        pdfDoc.text(`Nationalité: ${complaint.defendant_nationality}`, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      }
+      if (complaint.defendant_address) {
+        pdfDoc.text(`Adresse: ${complaint.defendant_address}`, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      }
+    }
+    yPosition -= lineHeight * 2;
+    
+    // Avocat
+    if (complaint.lawyer_name) {
+      pdfDoc.text("AVOCAT:", leftMargin, yPosition);
+      yPosition -= lineHeight;
+      pdfDoc.text(`Nom: ${complaint.lawyer_name}`, leftMargin + 20, yPosition);
+      yPosition -= lineHeight;
+      if (complaint.lawyer_address) {
+        pdfDoc.text(`Adresse: ${complaint.lawyer_address}`, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      }
+      yPosition -= lineHeight;
+    }
+    
+    // Soumission
+    pdfDoc.text("SOUMISSION:", leftMargin, yPosition);
+    yPosition -= lineHeight;
+    pdfDoc.text(`Soumis par: ${complaint.submitted_by?.username || 'Utilisateur anonyme'}`, leftMargin + 20, yPosition);
+    yPosition -= lineHeight * 2;
+    
+    // Faits de la plainte
+    pdfDoc.text("FAITS DE LA PLAINTES:", leftMargin, yPosition);
+    yPosition -= lineHeight;
+    
+    // Diviser le texte en lignes pour éviter les dépassements
+    const factsLines = wrapText(complaint.facts, 80);
+    factsLines.forEach(line => {
+      if (yPosition > 50) {
+        pdfDoc.text(line, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      } else {
+        // Nouvelle page si nécessaire
+        pdfDoc.addPage();
+        yPosition = 750;
+        pdfDoc.text(line, leftMargin + 20, yPosition);
+        yPosition -= lineHeight;
+      }
+    });
+    
+    // Pièces jointes
+    if (attachments.length > 0) {
+      yPosition -= lineHeight;
+      pdfDoc.text("PIECES JOINTES:", leftMargin, yPosition);
+      yPosition -= lineHeight;
+      attachments.forEach((attachment, index) => {
+        if (yPosition > 50) {
+          pdfDoc.text(`- ${attachment.file_name || `Pièce ${index + 1}`}`, leftMargin + 20, yPosition);
+          yPosition -= lineHeight;
+        } else {
+          pdfDoc.addPage();
+          yPosition = 750;
+          pdfDoc.text(`- ${attachment.file_name || `Pièce ${index + 1}`}`, leftMargin + 20, yPosition);
+          yPosition -= lineHeight;
+        }
+      });
+    }
+  };
+
+  const wrapText = (text: string, maxLength: number): string[] => {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+    
+    words.forEach(word => {
+      if ((currentLine + word).length <= maxLength) {
+        currentLine += (currentLine ? ' ' : '') + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+    
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+    
+    return lines;
+  };
+
+  const downloadPDF = async (pdfDoc: any, filename: string) => {
+    const pdfContent = pdfDoc.save();
+    const blob = new Blob([pdfContent], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const exportTextFallback = () => {
+    const complaintData = {
+      plaintiff: `${complaint.plaintiff_first_name} ${complaint.plaintiff_last_name}`,
+      facts: complaint.facts,
+      date: complaint.complaint_date,
+      city: complaint.complaint_city,
+      defendant: complaint.defendant_unknown ? 'Unknown' : `${complaint.defendant_first_name} ${complaint.defendant_last_name}`,
+      lawyer: complaint.lawyer_name || 'N/A',
+      submittedBy: complaint.submitted_by?.username || 'Anonymous'
+    };
+    
+    const content = `RAPPORT DE PLAINTES\n\n` +
+      `=================\n\n` +
+      `DEMANDEUR:\n` +
+      `Nom: ${complaintData.plaintiff}\n` +
+      `Date: ${complaintData.date}\n` +
+      `Ville: ${complaintData.city}\n\n` +
+      `DEFENDEUR:\n` +
+      `Statut: ${complaint.defendant_unknown ? 'Inconnu' : complaintData.defendant}\n` +
+      `${complaint.defendant_birth_date ? `Date de naissance: ${complaint.defendant_birth_date}\n` : ''}` +
+      `${complaint.defendant_birth_place ? `Lieu de naissance: ${complaint.defendant_birth_place}\n` : ''}` +
+      `${complaint.defendant_nationality ? `Nationalité: ${complaint.defendant_nationality}\n` : ''}` +
+      `${complaint.defendant_address ? `Adresse: ${complaint.defendant_address}\n` : ''}` +
+      `${complaint.defendant_city ? `Ville: ${complaint.defendant_city}\n` : ''}` +
+      `${complaint.defendant_postal_code ? `Code postal: ${complaint.defendant_postal_code}\n` : ''}\n` +
+      `${complaint.lawyer_name ? `AVOCAT:\nNom: ${complaint.lawyer_name}\n${complaint.lawyer_address ? `Adresse: ${complaint.lawyer_address}\n` : ''}` : ''}` +
+      `SOUMISSION:\n` +
+      `Soumis par: ${complaintData.submittedBy}\n\n` +
+      `FAITS DE LA PLAINTES:\n` +
+      `${'='.repeat(50)}\n` +
+      `${complaintData.facts}\n\n` +
+      `${attachments.length > 0 ? `PIECES JOINTES:\n${attachments.map((a, i) => `- ${a.file_name || `Pièce ${i + 1}`}`).join('\n')}` : ''}`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `plainte_${complaint.id || 'unknown'}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
 
   // ✅ ici attachments est bien typé
   const attachments: Attachment[] = complaint.attachments || [];
@@ -89,6 +341,13 @@ export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
               )}
             </button>
           )}
+          <button
+            onClick={() => exportToPDF()}
+            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            <Download className="h-4 w-4" />
+            <span>Exporter</span>
+          </button>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"

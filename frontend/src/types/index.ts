@@ -4,6 +4,10 @@ export interface User {
   phone?: string;
   full_name?: string;
   role: 'citizen' | 'authority' | 'admin' | 'moderator';
+  department?: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime';
+  badge_number?: string;
+  jurisdiction_region?: string;
+  jurisdiction_department?: string;
   is_anonymous?: boolean;
   preferred_language: 'fr' | 'wo';
   created_at: string;
@@ -30,6 +34,7 @@ export interface CrimeReport {
   user_id?: string;
   name: string;
   category_id: string;
+  category?: number; // Ajout pour compatibilité avec le backend
   title: string;
   description: string;
   location_text?: string;
@@ -85,7 +90,7 @@ export interface ReportStatus {
 export interface Authority {
   id: string;
   user_id: string;
-  department: 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime';
+  department: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime';
   jurisdiction_region?: string;
   jurisdiction_department?: string;
   badge_number?: string;

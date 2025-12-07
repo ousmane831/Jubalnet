@@ -284,7 +284,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-block mb-4">
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-xl">
+              <div className="bg-gradient-to-r from-green-500 to-green-600 p-3 rounded-xl">
                 <BarChart3 className="h-8 w-8 text-white" />
               </div>
             </div>
@@ -396,7 +396,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-block mb-4">
-              <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-3 rounded-xl">
+              <div className="bg-gradient-to-r from-green-500 to-green-600 p-3 rounded-xl">
                 <Map className="h-8 w-8 text-white" />
               </div>
             </div>

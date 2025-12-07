@@ -93,6 +93,81 @@
     "model": "categories.crimecategory",
     "pk": 7,
     "fields": {
+      "name_fr": "Phishing / Hameçonnage",
+      "name_wo": "Phishing / Hameçonnage",
+      "description_fr": "Tentatives de fraude par email, SMS ou sites web contrefaits",
+      "description_wo": "Wut njub ci email, SMS walla web yu false",
+      "priority_level": "high",
+      "color": "#3B82F6",
+      "icon": "Shield",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 8,
+    "fields": {
+      "name_fr": "Piratage de compte",
+      "name_wo": "Piratage bu compte",
+      "description_fr": "Accès non autorisé à des comptes en ligne, réseaux sociaux, email",
+      "description_wo": "Jokkoo bu dëggu ci compte yi, social networks, email",
+      "priority_level": "high",
+      "color": "#DC2626",
+      "icon": "Lock",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 9,
+    "fields": {
+      "name_fr": "Diffusion non autorisée de données personnelles",
+      "name_wo": "Yonne bu dëggu ci données personnelles",
+      "description_fr": "Partage ou vente d'informations personnelles sans consentement",
+      "description_wo": "Wone walla jaay information personnelles sans accord",
+      "priority_level": "urgent",
+      "color": "#991B1B",
+      "icon": "Eye",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 10,
+    "fields": {
+      "name_fr": "Escroquerie en ligne",
+      "name_wo": "Escroquerie ci internet",
+      "description_fr": "Arnaques, fraudes financières en ligne, faux sites e-commerce",
+      "description_wo": "Arn, njub finance ci internet, sites e-commerce yu false",
+      "priority_level": "high",
+      "color": "#EA580C",
+      "icon": "DollarSign",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 11,
+    "fields": {
+      "name_fr": "Cyberharcèlement",
+      "name_wo": "Cyberharcèlement",
+      "description_fr": "Harcèlement en ligne, menaces, intimidation sur internet",
+      "description_wo": "Harcèlement ci internet, menaces, intimidation",
+      "priority_level": "urgent",
+      "color": "#B91C1C",
+      "icon": "UserX",
+      "requires_specification": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "categories.crimecategory",
+    "pk": 12,
+    "fields": {
       "name_fr": "Autres",
       "name_wo": "Yeneen",
       "description_fr": "Autres crimes non listés ci-dessus - à préciser",

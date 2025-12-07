@@ -22,6 +22,8 @@ import { CrimeReport, CrimeCategory } from '../../types';
 import { RoleManagement } from './RoleManagement';
 import { MapAndCharts } from './MapAndCharts';
 import { ComplaintCard } from './ComplaintCard';
+import UserRoleBadge from '../UI/UserRoleBadge';
+import { ReportClassifier } from '../../utils/reportClassifier';
 
 interface DashboardPageProps {
   onPageChange: (page: string) => void;
@@ -43,10 +45,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onPageChange }) =>
     resolved_reports: 0,
     in_progress_reports: 0,
     urgent_reports: 0
-    
   });
-
-  
   const [activeTab, setActiveTab] = useState("reports"); // reports | roles
 
 const [complaints, setComplaints] = useState<any[]>([]);
@@ -250,7 +249,26 @@ const [complaints, setComplaints] = useState<any[]>([]);
     const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          report.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          report.region.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesPriority && matchesSearch;
+    
+    // Filtrage par département pour les autorités
+    const categoryId = (report.category as any)?.id || report.category; // Gérer objet vs nombre
+    const categoryName = categories.find(c => c.id === categoryId || c.id === String(categoryId))?.name_fr || '';
+    const classification = ReportClassifier.classifyReport(
+      categoryName,
+      report.region,
+      report.description
+    );
+    
+    console.log(`Signalement ${report.id}: category="${JSON.stringify(report.category)}", Catégorie="${categoryName}", Région="${report.region}" -> Département="${classification.department}"`);
+    console.log(`Catégories disponibles:`, categories.map(c => ({id: c.id, name: c.name_fr})));
+    
+    const canView = ReportClassifier.canUserViewReport(
+      user?.department,
+      classification.department,
+      user?.role || ''
+    );
+    
+    return matchesStatus && matchesPriority && matchesSearch && canView;
   });
 
   const statusOptions = [
@@ -299,11 +317,11 @@ const [complaints, setComplaints] = useState<any[]>([]);
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
+    <div className="min-h-screen bg-green-to-br from-green-50 via-green-50/30 to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header avec gradient moderne */}
         <div className="mb-8">
-          <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 rounded-2xl shadow-2xl p-8 mb-6 text-white">
+          <div className="bg-gradient-to-r from-green-600 via-green-700 to-green-700 rounded-2xl shadow-2xl p-8 mb-6 text-white">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <div className="flex items-center space-x-3 mb-2">
@@ -339,6 +357,11 @@ const [complaints, setComplaints] = useState<any[]>([]);
                 <span>{language === 'fr' ? 'Exporter' : 'Exporter'}</span>
               </button>
               </div>
+            </div>
+            
+            {/* Badge utilisateur */}
+            <div className="mt-4">
+              <UserRoleBadge showUserInfo={true} showPermissions={false} />
             </div>
           </div>
 
@@ -409,92 +432,7 @@ const [complaints, setComplaints] = useState<any[]>([]);
         {/* Statistics Cards améliorées avec animations - Affichées uniquement pour l'onglet Signalements */}
         {activeTab === "reports" && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-blue-500 overflow-hidden group">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                      <FileText className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                        {language === 'fr' ? 'Total' : 'Baxal yépp'}
-                      </p>
-                      <p className="text-4xl font-bold text-gray-900">{statistics.total_reports}</p>
-                    </div>
-              </div>
-                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" style={{ width: '100%' }}></div>
-              </div>
-            </div>
-          </div>
-
-              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-orange-500 overflow-hidden group">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                      <Clock className="h-8 w-8 text-orange-600" />
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                  {language === 'fr' ? 'En enquête' : 'Ci wut'}
-                </p>
-                      <p className="text-4xl font-bold text-gray-900">{statistics.in_progress_reports}</p>
-                    </div>
-              </div>
-                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500" 
-                      style={{ width: statistics.total_reports > 0 ? `${(statistics.in_progress_reports / statistics.total_reports) * 100}%` : '0%' }}
-                    ></div>
-              </div>
-            </div>
-          </div>
-
-              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-red-500 overflow-hidden group">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="bg-gradient-to-br from-red-100 to-red-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                      <AlertTriangle className="h-8 w-8 text-red-600" />
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                  {language === 'fr' ? 'Urgents' : 'Caxaan'}
-                </p>
-                      <p className="text-4xl font-bold text-gray-900">{statistics.urgent_reports}</p>
-                    </div>
-              </div>
-                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all duration-500" 
-                      style={{ width: statistics.total_reports > 0 ? `${(statistics.urgent_reports / statistics.total_reports) * 100}%` : '0%' }}
-                    ></div>
-              </div>
-            </div>
-          </div>
-
-              <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-green-500 overflow-hidden group">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="h-8 w-8 text-green-600" />
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                  {language === 'fr' ? 'Résolus' : 'Jaax'}
-                </p>
-                      <p className="text-4xl font-bold text-gray-900">{statistics.resolved_reports}</p>
-                    </div>
-              </div>
-                  <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-500" 
-                      style={{ width: statistics.total_reports > 0 ? `${(statistics.resolved_reports / statistics.total_reports) * 100}%` : '0%' }}
-                    ></div>
-              </div>
-            </div>
-          </div>
-        </div>
+      
 
             {/* Filters améliorés */}
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
@@ -572,8 +510,16 @@ const [complaints, setComplaints] = useState<any[]>([]);
             </div>
           ) : (
             filteredReports.map((report) => {
-              const category = categories.find(c => c.id === report.category_id);
+              const categoryId = (report.category as any)?.id || report.category;
+              const categoryName = categories.find(c => c.id === categoryId || c.id === String(categoryId))?.name_fr || '';
+              const category = categories.find(c => c.id === categoryId || c.id === String(categoryId));
               const isExpanded = expandedReport === report.id;
+              const classification = ReportClassifier.classifyReport(
+                categoryName,
+                report.region,
+                report.description
+              );
+              const departmentInfo = ReportClassifier.getDepartmentInfo()[classification.department];
               
               return (
                 <div key={report.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden">
@@ -594,6 +540,17 @@ const [complaints, setComplaints] = useState<any[]>([]);
                           )}
                           <div className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 ${getPriorityColor(report.priority)}`}>
                             {report.priority.toUpperCase()}
+                          </div>
+                          <div 
+                            className="px-3 py-1.5 rounded-full text-xs font-semibold border-2 flex items-center space-x-1"
+                            style={{ 
+                              backgroundColor: `${departmentInfo.color}20`,
+                              borderColor: departmentInfo.color,
+                              color: departmentInfo.color 
+                            }}
+                          >
+                            <Shield className="h-3.5 w-3.5" />
+                            <span>{departmentInfo.name.split(' ')[0]}</span>
                           </div>
                         </div>
                         

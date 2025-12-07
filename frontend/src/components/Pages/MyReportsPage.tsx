@@ -155,14 +155,14 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => setSelectedReport(null)}
-            className="mb-6 flex items-center text-indigo-600 hover:text-indigo-800 font-semibold transition-colors group"
+            className="mb-6 flex items-center text-green-600 hover:text-green-800 font-semibold transition-colors group"
           >
             <ChevronRight className="h-5 w-5 mr-2 transform rotate-180 group-hover:-translate-x-1 transition-transform" />
             {language === 'fr' ? 'Retour à mes signalements' : 'Dellu ci sama baxal yi'}
           </button>
 
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 p-8 text-white relative overflow-hidden">
+            <div className="bg-gradient-to-r from-green-600 via-green-600 to-green-600 p-8 text-white relative overflow-hidden">
               <div className="absolute inset-0 bg-black opacity-5"></div>
               <div className="relative z-10">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
@@ -316,7 +316,7 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
                     <h3 className="text-lg font-bold text-gray-900 mb-4">
                       {language === 'fr' ? 'Catégorie' : 'Mbind'}
                     </h3>
-                    {category && (
+                    {category ? (
                       <div className="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200">
                         <div 
                           className="w-6 h-6 rounded-full shadow-md"
@@ -324,6 +324,13 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({ onPageChange }) =>
                         ></div>
                         <span className="font-semibold text-gray-900">
                           {language === 'fr' ? category.name_fr : category.name_wo}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200">
+                        <div className="w-6 h-6 rounded-full shadow-md bg-gray-400"></div>
+                        <span className="font-semibold text-gray-900">
+                          {(selectedReport as any).category?.name_fr || 'Catégorie inconnue'}
                         </span>
                       </div>
                     )}

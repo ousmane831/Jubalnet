@@ -503,13 +503,56 @@ async getUsers(): Promise<any[]> {
   return this.handleResponse<any[]>(response);
 }
 
-async updateUserRole(userId: string, role: string): Promise<any> {
+async updateUserRole(userId: string, newRole: string): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/auth/users/${userId}/update-role/`, {
-    method: "POST",
+    method: 'POST',
     headers: this.getHeaders(),
-    body: JSON.stringify({ role }),
+    body: JSON.stringify({ role: newRole }),
   });
-  return this.handleResponse<any>(response);
+  return this.handleResponse(response);
+}
+
+async updateUserDepartment(userId: string, department: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/update-department/`, {
+    method: 'POST',
+    headers: this.getHeaders(),
+    body: JSON.stringify({ department }),
+  });
+  return this.handleResponse(response);
+}
+
+// ---------------- Generic HTTP Methods ---------------- //
+async get(endpoint: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    headers: this.getHeaders(),
+  });
+  return this.handleResponse(response);
+}
+
+async post(endpoint: string, data: any): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers: this.getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return this.handleResponse(response);
+}
+
+async put(endpoint: string, data: any): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'PUT',
+    headers: this.getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return this.handleResponse(response);
+}
+
+async delete(endpoint: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'DELETE',
+    headers: this.getHeaders(),
+  });
+  return this.handleResponse(response);
 }
 
 

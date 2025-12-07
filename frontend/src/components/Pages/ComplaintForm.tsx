@@ -463,7 +463,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <header className="bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white py-12 shadow-xl">
+      <header className="bg-gradient-to-br from-green-900 via-green-800 to-green-900 text-white py-12 shadow-xl">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white bg-opacity-20 backdrop-blur-md p-6 rounded-3xl shadow-2xl inline-block mb-6 animate-fade-in">
             <Shield className="h-16 w-16 text-white mx-auto" />

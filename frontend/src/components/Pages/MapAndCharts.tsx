@@ -25,7 +25,11 @@ import {
   Clock,
   Search,
   Sparkles,
-  Activity
+  Activity,
+  Shield,
+  Monitor,
+  Badge,
+  CreditCard
 } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 
@@ -53,16 +57,21 @@ export const MapAndCharts: React.FC<MapAndChartsProps> = ({ reports }) => {
   const { language } = useLanguage();
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [selectedAuthority, setSelectedAuthority] = useState<string>("all");
 
   // Liste des régions uniques
   const regions = Array.from(new Set(reports.map((r) => r.region))).sort();
 
-  // Filtrage
+  // Filtrage par autorité
   const filteredReports = reports.filter((r) => {
     const matchesRegion = selectedRegion === "all" || r.region === selectedRegion;
     const matchesStatus = selectedStatus === "all" || r.status === selectedStatus;
-    return matchesRegion && matchesStatus;
+    const matchesAuthority = selectedAuthority === "all" || r.authority_type === selectedAuthority;
+    return matchesRegion && matchesStatus && matchesAuthority;
   });
+
+  // Données pour diagramme par autorité
+  const authorityData = []; // TODO: Implement authority data
 
   // Données pour diagramme par statut
   const statusData = [
@@ -113,7 +122,7 @@ export const MapAndCharts: React.FC<MapAndChartsProps> = ({ reports }) => {
   return (
     <div className="space-y-6">
       {/* Header avec statistiques */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-700 rounded-2xl shadow-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-green-600 via-green-700 to-green-700 rounded-2xl shadow-2xl p-6 text-white">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
             <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
@@ -152,7 +161,7 @@ export const MapAndCharts: React.FC<MapAndChartsProps> = ({ reports }) => {
             {language === "fr" ? "Filtres" : "Filtres"}
           </h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <select
@@ -194,8 +203,27 @@ export const MapAndCharts: React.FC<MapAndChartsProps> = ({ reports }) => {
               </option>
             </select>
           </div>
+          <div className="relative">
+            <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <select
+              value={selectedAuthority}
+              onChange={(e) => setSelectedAuthority(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-white cursor-pointer font-medium"
+            >
+              <option value="all">
+                {language === "fr" ? "Toutes les autorités" : "Autorité yépp"}
+              </option>
+              {/* TODO: Add authority options */}
+              <option value="dsc">DSC</option>
+              <option value="police">Police</option>
+              <option value="gendarmerie">Gendarmerie</option>
+              <option value="brb">BRB</option>
+            </select>
+          </div>
         </div>
       </div>
+
+   
 
       {/* Carte + Diagramme par statut */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -24,7 +24,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const storedAnonymous = localStorage.getItem('anonymous_session');
 
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      
+      // Restaurer le département depuis localStorage si disponible
+      const savedAssignments = JSON.parse(localStorage.getItem('departmentAssignments') || '{}');
+      if (savedAssignments[parsedUser.id] && !parsedUser.department) {
+        parsedUser.department = savedAssignments[parsedUser.id];
+        // Mettre à jour localStorage avec les données restaurées
+        localStorage.setItem('user', JSON.stringify(parsedUser));
+      }
+      
+      setUser(parsedUser);
     }
     if (storedAnonymous) {
       setIsAnonymous(true);
@@ -46,9 +56,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: response.user.role as 'citizen' | 'authority' | 'admin' | 'moderator',
         is_anonymous: response.user.is_anonymous,
         preferred_language: response.user.preferred_language as 'fr' | 'wo',
+        department: (response.user as any).department,
+        badge_number: (response.user as any).badge_number,
+        jurisdiction_region: (response.user as any).jurisdiction_region,
+        jurisdiction_department: (response.user as any).jurisdiction_department,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
+
+      // Restaurer le département depuis localStorage si l'API ne le retourne pas
+      const savedAssignments = JSON.parse(localStorage.getItem('departmentAssignments') || '{}');
+      if (savedAssignments[user.id] && !user.department) {
+        user.department = savedAssignments[user.id];
+      }
 
       setUser(user);
       setIsAnonymous(false);
@@ -72,6 +92,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: response.user.role as 'citizen' | 'authority' | 'admin' | 'moderator',
         is_anonymous: response.user.is_anonymous,
         preferred_language: response.user.preferred_language as 'fr' | 'wo',
+        department: (response.user as any).department,
+        badge_number: (response.user as any).badge_number,
+        jurisdiction_region: (response.user as any).jurisdiction_region,
+        jurisdiction_department: (response.user as any).jurisdiction_department,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
@@ -121,6 +145,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: response.user.role as 'citizen' | 'authority' | 'admin' | 'moderator',
         is_anonymous: response.user.is_anonymous,
         preferred_language: response.user.preferred_language as 'fr' | 'wo',
+        department: (response.user as any).department,
+        badge_number: (response.user as any).badge_number,
+        jurisdiction_region: (response.user as any).jurisdiction_region,
+        jurisdiction_department: (response.user as any).jurisdiction_department,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
