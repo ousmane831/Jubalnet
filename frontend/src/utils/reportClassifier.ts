@@ -50,6 +50,11 @@ export const CATEGORY_DEPARTMENT_MAPPING: Record<string, ReportClassification> =
     priority: 'high',
     reason: 'Phishing/Hameçonnage - compétence DSC'
   },
+  'phishing / hameçonnage': {
+    department: 'dsc',
+    priority: 'high',
+    reason: 'Phishing/Hameçonnage - compétence DSC'
+  },
   'escroquerie_ligne': {
     department: 'dsc',
     priority: 'high',

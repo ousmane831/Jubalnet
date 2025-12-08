@@ -98,6 +98,38 @@ export interface Authority {
   created_at: string;
 }
 
+export interface Complaint {
+  id: string;
+  user_id?: string;
+  category?: number; // Ajout pour la classification par département
+  facts: string;
+  lawyer_name?: string;
+  lawyer_address?: string;
+  complaint_date: string;
+  complaint_city: string;
+  plaintiff_first_name: string;
+  plaintiff_last_name: string;
+  plaintiff_birth_date: string;
+  plaintiff_birth_place: string;
+  plaintiff_nationality: string;
+  plaintiff_address: string;
+  plaintiff_city: string;
+  plaintiff_postal_code: string;
+  defendant_first_name?: string;
+  defendant_last_name?: string;
+  defendant_birth_date?: string;
+  defendant_birth_place?: string;
+  defendant_nationality?: string;
+  defendant_address?: string;
+  defendant_city?: string;
+  defendant_postal_code?: string;
+  defendant_unknown: boolean;
+  status: 'submitted' | 'reviewing' | 'investigating' | 'forwarded' | 'resolved' | 'closed';
+  created_at: string;
+  updated_at: string;
+  assigned_authority_id?: string;
+}
+
 export interface EmergencyContact {
   id: string;
   name_fr: string;

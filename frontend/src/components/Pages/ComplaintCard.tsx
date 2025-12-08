@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { FileText, Calendar, MapPin, ChevronDown, ChevronRight, MessageCircle, Download } from "lucide-react";
+import { FileText, Calendar, MapPin, ChevronDown, ChevronRight, MessageCircle, Download, Shield } from "lucide-react";
 import { ComplaintMessages } from "./ComplaintMessages";
+import { ReportClassifier } from "../../utils/reportClassifier";
+import { CrimeCategory } from "../../types";
 
 interface Attachment {
   file: string;
@@ -9,6 +11,7 @@ interface Attachment {
 
 interface Complaint {
   id?: string;
+  category?: number; // Ajout pour la classification par département
   plaintiff_first_name: string;
   plaintiff_last_name: string;
   facts: string;
@@ -34,11 +37,31 @@ interface Complaint {
 
 interface ComplaintCardProps {
   complaint: Complaint;
+  categories?: CrimeCategory[]; // Ajout des catégories pour la classification
 }
 
-export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
+export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint, categories = [] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
+
+  // Classification par département
+  const categoryId = complaint.category;
+  const categoryName = categories.find(c => c.id === String(categoryId))?.name_fr || '';
+  
+  console.log(`ComplaintCard - Complaint ID: ${complaint.id}`);
+  console.log(`- Category ID: ${categoryId}`);
+  console.log(`- Category Name: "${categoryName}"`);
+  console.log(`- Available categories:`, categories.map(c => ({id: c.id, name: c.name_fr})));
+  
+  const classification = ReportClassifier.classifyReport(
+    categoryName,
+    complaint.complaint_city, // Utiliser la ville comme région
+    complaint.facts
+  );
+  
+  console.log(`- Classification result:`, classification);
+  
+  const departmentInfo = ReportClassifier.getDepartmentInfo()[classification.department];
 
   const exportToPDF = async () => {
     console.log('Export PDF clicked for complaint:', complaint.id);
@@ -304,10 +327,26 @@ export const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
             <div className="bg-gradient-to-br from-green-100 to-green-200 p-3 rounded-xl">
               <FileText className="h-6 w-6 text-green-600" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">
-                {complaint.plaintiff_first_name} {complaint.plaintiff_last_name}
-              </h3>
+            <div className="flex-1">
+              <div className="flex items-center flex-wrap gap-2 mb-2">
+                <h3 className="text-xl font-bold text-gray-900">
+                  {complaint.plaintiff_first_name} {complaint.plaintiff_last_name}
+                </h3>
+                {/* Badge de département */}
+                {categoryName && (
+                  <div 
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold border-2 flex items-center space-x-1"
+                    style={{ 
+                      backgroundColor: `${departmentInfo.color}20`,
+                      borderColor: departmentInfo.color,
+                      color: departmentInfo.color 
+                    }}
+                  >
+                    <Shield className="h-3.5 w-3.5" />
+                    <span>{departmentInfo.name.split(' ')[0]}</span>
+                  </div>
+                )}
+              </div>
               <div className="flex items-center space-x-4 text-sm text-gray-600">
                 <span className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-lg">
                   <Calendar className="h-4 w-4 text-gray-500" />

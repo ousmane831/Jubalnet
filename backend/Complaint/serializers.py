@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Complaint, ComplaintAttachment, ComplaintMessage
 from django.contrib.auth import get_user_model
+from categories.serializers import CrimeCategorySerializer
 
 User = get_user_model()
 
@@ -58,6 +59,8 @@ class ComplaintSerializer(serializers.ModelSerializer):
     attachments = ComplaintAttachmentSerializer(many=True, read_only=True)
     messages = serializers.SerializerMethodField()
     unread_messages_count = serializers.SerializerMethodField()
+    category = CrimeCategorySerializer(read_only=True)
+    category_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Complaint
@@ -103,3 +106,25 @@ class ComplaintSerializer(serializers.ModelSerializer):
             # Si erreur (modèle pas migré, etc.), retourner 0
             print(f"Erreur lors du comptage des messages non lus: {e}")
         return 0
+
+    def create(self, validated_data):
+        print(f"Validated data reçu: {validated_data}")
+        category_id = validated_data.pop('category_id', None)
+        print(f"Category ID extrait: {category_id}")
+        complaint = super().create(validated_data)
+        
+        if category_id:
+            try:
+                from categories.models import CrimeCategory
+                category = CrimeCategory.objects.get(id=category_id)
+                print(f"Catégorie trouvée: {category.name_fr}")
+                complaint.category = category
+                complaint.save()
+                print(f"Catégorie assignée à la plainte {complaint.id}")
+            except CrimeCategory.DoesNotExist:
+                print(f"Catégorie ID {category_id} non trouvée")
+                pass  # Laisser category à None si la catégorie n'existe pas
+        else:
+            print("Aucun category_id fourni")
+        
+        return complaint

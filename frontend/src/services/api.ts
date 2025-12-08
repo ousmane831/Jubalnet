@@ -52,6 +52,7 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 export interface ComplaintData {
+  category?: number; // Ajout pour la classification par département
   plaintiff_first_name: string;
   plaintiff_last_name: string;
   plaintiff_birth_date: string;

@@ -23,6 +23,7 @@ class ComplaintAdmin(admin.ModelAdmin):
     list_display = (
         'plaintiff_first_name',
         'plaintiff_last_name',
+        'category',
         'defendant_first_name',
         'defendant_last_name',
         'complaint_date',
@@ -34,7 +35,7 @@ class ComplaintAdmin(admin.ModelAdmin):
     list_display_links = ('plaintiff_first_name', 'plaintiff_last_name')
 
     # Filtres dans la colonne de droite
-    list_filter = ('complaint_date', 'complaint_city', 'submitted_by')
+    list_filter = ('complaint_date', 'complaint_city', 'submitted_by', 'category')
 
     # Barre de recherche
     search_fields = (
@@ -67,7 +68,7 @@ class ComplaintAdmin(admin.ModelAdmin):
         }),
         ('Détails de la plainte', {
             'fields': (
-                'facts',  'lawyer_name', 'lawyer_address',
+                'category', 'facts',  'lawyer_name', 'lawyer_address',
                 'complaint_date', 'complaint_city', 'submitted_by',
             )
         }),

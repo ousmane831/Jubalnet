@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { apiService } from "../../services/api";
+import { CrimeCategory } from "../../types";
 
 interface ComplaintFormProps {
   onPageChange?: (page: string) => void;
@@ -38,6 +39,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({ onPageChange }) =>
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [hasLawyer, setHasLawyer] = useState(false);
+  const [categories, setCategories] = useState<CrimeCategory[]>([]);
   
   const [plaintiff, setPlaintiff] = useState({
     firstName: "",
@@ -68,6 +70,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({ onPageChange }) =>
     lawyerAddress: "",
     date: new Date().toISOString().split("T")[0],
     city: "",
+    category: "", // Ajout du champ catégorie
   });
 
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -78,6 +81,20 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({ onPageChange }) =>
   const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false);
   const [assistantMessage, setAssistantMessage] = useState('');
   const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Charger les catégories au montage du composant
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await apiService.getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des catégories:', error);
+      }
+    };
+    
+    loadCategories();
+  }, []);
 
   // Gestion des changements
   const handleChangePlaintiff = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +110,7 @@ export const ComplaintForm: React.FC<ComplaintFormProps> = ({ onPageChange }) =>
   };
 
   const handleChangeComplaint = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setComplaint({ ...complaint, [name]: value });
@@ -324,6 +341,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     const complaintData = {
+      category_id: complaint.category ? Number(complaint.category) : undefined, // Correction: envoyer category_id
       facts: complaint.facts,
         lawyer_name: complaint.lawyerName || undefined,
         lawyer_address: complaint.lawyerAddress || undefined,
@@ -347,6 +365,9 @@ const handleSubmit = async (e: React.FormEvent) => {
         defendant_postal_code: defendant.unknown ? undefined : defendant.postalCode,
       defendant_unknown: defendant.unknown,
     };
+
+    console.log('ComplaintForm - Données envoyées:', complaintData);
+    console.log('Catégorie sélectionnée:', complaint.category);
 
     await apiService.createComplaint(complaintData, attachments);
 
@@ -1033,6 +1054,29 @@ const handleSubmit = async (e: React.FormEvent) => {
             </div>
 
             <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <Scale className="w-4 h-4 text-orange-600" />
+                  {language === 'fr' ? 'Catégorie de la plainte' : 'Kategori bu jëf bi'}
+                </label>
+                <select
+                  name="category"
+                  value={complaint.category}
+                  onChange={handleChangeComplaint}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-orange-600 focus:ring-2 focus:ring-orange-200 transition-all duration-200 text-lg"
+                >
+                  <option value="">
+                    {language === 'fr' ? 'Sélectionnez une catégorie' : 'Tann kategori bu'}
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {language === 'fr' ? category.name_fr : category.name_wo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-orange-600" />

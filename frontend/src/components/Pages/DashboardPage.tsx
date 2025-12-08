@@ -81,6 +81,7 @@ const [complaints, setComplaints] = useState<any[]>([]);
       console.log('Tentative de récupération des plaintes...');
       complaintsData = await apiService.getComplaints();
       console.log('Plaintes récupérées avec succès:', complaintsData);
+      console.log('Détails des plaintes brutes:', JSON.stringify(complaintsData, null, 2));
     } catch (complaintError) {
       console.error('Erreur lors de la récupération des plaintes:', complaintError);
       setError('Erreur lors du chargement des plaintes');
@@ -271,6 +272,41 @@ const [complaints, setComplaints] = useState<any[]>([]);
     return matchesStatus && matchesPriority && matchesSearch && canView;
   });
 
+  // Filtrer les plaintes selon le département de l'utilisateur
+  const filteredComplaints = complaints.filter(complaint => {
+    const matchesSearch = complaint.facts.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         complaint.complaint_city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         `${complaint.plaintiff_first_name} ${complaint.plaintiff_last_name}`.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Classification par département
+    const categoryId = complaint.category?.id || complaint.category; // Gérer objet vs ID direct
+    const categoryName = categories.find(c => c.id === categoryId)?.name_fr || '';
+    
+    console.log(`Dashboard - Complaint ID: ${complaint.id}`);
+    console.log(`- Category ID: ${categoryId}`);
+    console.log(`- Category Name: "${categoryName}"`);
+    console.log(`- Available categories:`, categories.map(c => ({id: c.id, name: c.name_fr})));
+    
+    const classification = ReportClassifier.classifyReport(
+      categoryName,
+      complaint.complaint_city, // Utiliser la ville comme région
+      complaint.facts
+    );
+
+    console.log(`Plainte ${complaint.id}: category="${categoryId}", Catégorie="${categoryName}", Ville="${complaint.complaint_city}" -> Département="${classification.department}"`);
+
+    const canView = ReportClassifier.canUserViewReport(
+      user?.department,
+      classification.department,
+      user?.role || ''
+    );
+    
+    console.log(`- User department: ${user?.department}`);
+    console.log(`- Can view: ${canView}`);
+
+    return matchesSearch && canView;
+  });
+
   const statusOptions = [
     { value: 'all', label: language === 'fr' ? 'Tous les statuts' : 'Statut yépp' },
     { value: 'submitted', label: language === 'fr' ? 'Soumis' : 'Yónnee' },
@@ -394,9 +430,9 @@ const [complaints, setComplaints] = useState<any[]>([]);
             >
               <FileText className="h-5 w-5" />
               <span>{language === "fr" ? "Plaintes" : "Complaints"}</span>
-              {activeTab === "complaints" && complaints.length > 0 && (
+              {activeTab === "complaints" && filteredComplaints.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {complaints.length}
+                  {filteredComplaints.length}
                 </span>
               )}
   </button>
@@ -751,7 +787,7 @@ const [complaints, setComplaints] = useState<any[]>([]);
                   {language === 'fr' ? 'Chargement des plaintes...' : 'Daje plaintes yi...'}
                 </p>
               </div>
-    ) : complaints.length === 0 ? (
+    ) : filteredComplaints.length === 0 ? (
               <div className="bg-white rounded-2xl shadow-xl p-16 text-center">
                 <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-6 rounded-full inline-block mb-6">
                   <FileText className="h-16 w-16 text-gray-400" />
@@ -761,8 +797,8 @@ const [complaints, setComplaints] = useState<any[]>([]);
                 </h3>
                 <p className="text-gray-600 text-lg">
                   {language === 'fr' 
-                    ? 'Aucune plainte n\'a été soumise pour le moment.'
-                    : 'Amul plainte bu yónnee ci saa si.'
+                    ? 'Aucune plainte ne correspond aux critères sélectionnés.'
+                    : 'Amul plainte bu moom critères yi nga tànn.'
                   }
                 </p>
               </div>
@@ -773,12 +809,12 @@ const [complaints, setComplaints] = useState<any[]>([]);
                     {language === 'fr' ? 'Liste des plaintes' : 'Liste plaintes yi'}
                   </h3>
                   <span className="text-sm font-medium text-green-600 bg-green-50 px-4 py-2 rounded-full">
-                    {complaints.length} {language === 'fr' ? 'plaintes' : 'plaintes'}
+                    {filteredComplaints.length} {language === 'fr' ? 'plaintes' : 'plaintes'}
                   </span>
                 </div>
                 <div className="space-y-4">
-                  {complaints.map((complaint) => (
-        <ComplaintCard key={complaint.id} complaint={complaint} />
+                  {filteredComplaints.map((complaint) => (
+        <ComplaintCard key={complaint.id} complaint={complaint} categories={categories} />
                   ))}
                 </div>
               </div>

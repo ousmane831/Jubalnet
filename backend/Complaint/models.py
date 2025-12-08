@@ -24,6 +24,7 @@ class Complaint(models.Model):
     defendant_unknown = models.BooleanField(default=False)
 
     # Détails de la plainte
+    category = models.ForeignKey('categories.CrimeCategory', on_delete=models.SET_NULL, null=True, blank=True)
     facts = models.TextField()
     lawyer_name = models.CharField(max_length=255, blank=True, null=True)
     lawyer_address = models.CharField(max_length=255, blank=True, null=True)
