@@ -121,6 +121,16 @@ export const RURAL_REGIONS = [
 ];
 
 export class ReportClassifier {
+  // Mapping des logos pour chaque département
+  static getDepartmentLogos(): Record<string, string> {
+    return {
+      cdp: '/src/assets/departments/cdp-logo.png',
+      dsc: '/src/assets/departments/dsc-logo.png',
+      police: '/src/assets/departments/police-logo.png',
+      gendarmerie: '/src/assets/departments/gendarmerie-logo.png'
+    };
+  }
+
   /**
    * Classifie un signalement selon sa catégorie et sa localisation
    */

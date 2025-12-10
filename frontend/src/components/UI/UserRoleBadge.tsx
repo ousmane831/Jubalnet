@@ -2,6 +2,10 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import RoleBadge from './RoleBadge';
 import { User, Mail } from 'lucide-react';
+import dscLogo from '../../assets/departments/dsc-logo.png';
+import cdpLogo from '../../assets/departments/cdp-logo.png';
+import policeLogo from '../../assets/departments/police-logo.png';
+import gendarmerieLogo from '../../assets/departments/gendarmerie-logo.png';
 
 interface UserRoleBadgeProps {
   showPermissions?: boolean;
@@ -9,6 +13,7 @@ interface UserRoleBadgeProps {
   className?: string;
   showLabel?: boolean;
   showUserInfo?: boolean;
+  logoSize?: number; 
 }
 
 export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({ 
@@ -16,9 +21,21 @@ export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
   size = 'sm',
   className = '',
   showLabel = true,
-  showUserInfo = true
+  showUserInfo = true,
+  logoSize = 68
 }) => {
   const { user } = useAuth();
+
+  // Fonction pour obtenir le logo du département
+  const getDepartmentLogo = (department?: string | null): string | undefined => {
+    switch (department) {
+      case 'dsc': return dscLogo;
+      case 'cdp': return cdpLogo;
+      case 'police': return policeLogo;
+      case 'gendarmerie': return gendarmerieLogo;
+      default: return undefined;
+    }
+  };
 
   if (!user) return null;
 
@@ -26,33 +43,48 @@ export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
     <div className={`user-role-badge ${className}`}>
       {showUserInfo && (
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 mb-3">
-          <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-full">
-              <User className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-bold text-gray-900">
-                  {user.first_name && user.last_name 
-                    ? `${user.first_name} ${user.last_name}`
-                    : user.username || 'Utilisateur'
-                  }
-                </h3>
-                <RoleBadge 
-                  user={user} 
-                  size="sm" 
-                  showPermissions={false} 
-                  className="ml-2"
-                />
-              </div>
-              {user.email && (
-                <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
-                  <Mail className="h-4 w-4" />
-                  <span>{user.email}</span>
-                </div>
-              )}
-            </div>
-          </div>
+          <div className="flex items-start justify-between">
+  
+  {/* --- Partie gauche (infos utilisateur) --- */}
+  <div className="flex items-center space-x-3">
+    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-full">
+      <User className="h-6 w-6 text-white" />
+    </div>
+
+    <div>
+      <div className="flex items-center space-x-2">
+        <h3 className="font-bold text-gray-900">
+          {user.full_name || 'Utilisateur'}
+        </h3>
+        <RoleBadge 
+          user={user} 
+          size="sm" 
+          showPermissions={false} 
+          className="ml-2"
+        />
+      </div>
+
+      {user.email && (
+        <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
+          <Mail className="h-4 w-4" />
+          <span>{user.email}</span>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* --- Partie droite : Logo du département --- */}
+  {getDepartmentLogo(user.department) && (
+    <img
+      src={getDepartmentLogo(user.department)!}
+      alt="department logo"
+      style={{ height: logoSize, width: logoSize }}
+      className="h-10 w-10 object-contain"
+    />
+  )}
+
+</div>
+
           
           {/* Informations supplémentaires */}
           {(user.badge_number || user.department || user.jurisdiction_region) && (
@@ -66,7 +98,16 @@ export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
               {user.department && (
                 <div className="flex items-center space-x-2 text-sm">
                   <span className="font-medium text-gray-700">Département:</span>
-                  <span className="text-gray-600">{user.department}</span>
+                  <div className="flex items-center space-x-2">
+                    {getDepartmentLogo(user.department) && (
+                      <img 
+                        src={getDepartmentLogo(user.department)!} 
+                        alt={`${user.department} logo`}
+                        className="h-8 w-8 object-contain"
+                      />
+                    )}
+                    <span className="text-gray-600">{user.department.toUpperCase()}</span>
+                  </div>
                 </div>
               )}
               {user.jurisdiction_region && (

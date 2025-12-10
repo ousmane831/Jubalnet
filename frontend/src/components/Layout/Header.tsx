@@ -12,7 +12,11 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
-import logo from "../../assets/jubbalnet.jpg";
+import logo from "../../assets/jubbalnet1.png";
+import dscLogo from "../../assets/departments/dsc-logo.png";
+import cdpLogo from "../../assets/departments/cdp-logo.png";
+import policeLogo from "../../assets/departments/police-logo.png";
+import gendarmerieLogo from "../../assets/departments/gendarmerie-logo.png";
 
 interface HeaderProps {
   currentPage: string;
@@ -25,6 +29,21 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { user, isAuthenticated, isAnonymous, logout } = useAuth();
+
+  // Fonction pour obtenir le logo du département de l'autorité
+  const getDepartmentLogo = (department?: string) => {
+    switch (department) {
+      case 'dsc': return dscLogo;
+      case 'cdp': return cdpLogo;
+      case 'police': return policeLogo;
+      case 'gendarmerie': return gendarmerieLogo;
+      default: return null;
+    }
+  };
+
+  // Vérifier si l'utilisateur est une autorité avec un département
+  const isAuthorityWithDepartment = isAuthenticated && user?.role === 'authority' && user.department;
+  const departmentLogo = isAuthorityWithDepartment ? getDepartmentLogo(user.department) : null;
 
   const navigationItems = [
     { id: 'home', label: t('nav.home'), icon: Home },

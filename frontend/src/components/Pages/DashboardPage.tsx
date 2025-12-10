@@ -24,6 +24,10 @@ import { MapAndCharts } from './MapAndCharts';
 import { ComplaintCard } from './ComplaintCard';
 import UserRoleBadge from '../UI/UserRoleBadge';
 import { ReportClassifier } from '../../utils/reportClassifier';
+import cdpLogo from '../../assets/departments/cdp-logo.png';
+import dscLogo from '../../assets/departments/dsc-logo.png';
+import policeLogo from '../../assets/departments/police-logo.png';
+import gendarmerieLogo from '../../assets/departments/gendarmerie-logo.png';
 
 interface DashboardPageProps {
   onPageChange: (page: string) => void;
@@ -230,6 +234,16 @@ const [complaints, setComplaints] = useState<any[]>([]);
       case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'low': return 'bg-green-100 text-green-800 border-green-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getDepartmentLogo = (department: string) => {
+    switch (department) {
+      case 'cdp': return cdpLogo;
+      case 'dsc': return dscLogo;
+      case 'police': return policeLogo;
+      case 'gendarmerie': return gendarmerieLogo;
+      default: return null;
     }
   };
 
@@ -585,7 +599,15 @@ const [complaints, setComplaints] = useState<any[]>([]);
                               color: departmentInfo.color 
                             }}
                           >
-                            <Shield className="h-3.5 w-3.5" />
+                            {getDepartmentLogo(classification.department) ? (
+                              <img 
+                                src={getDepartmentLogo(classification.department)} 
+                                alt={`${departmentInfo.name} logo`}
+                                className="h-6 w-6 object-contain"
+                              />
+                            ) : (
+                              <Shield className="h-3.5 w-3.5" />
+                            )}
                             <span>{departmentInfo.name.split(' ')[0]}</span>
                           </div>
                         </div>
