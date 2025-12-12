@@ -17,6 +17,10 @@ import { useLanguage } from '../../contexts/LanguageContext';
 interface PreventionPageProps {
   onPageChange: (page: string) => void;
 }
+import protectionPDF from '../../assets/pdfs/loi-protection-donnees.pdf';
+import cyberPDF from '../../assets/pdfs/loi-cybercriminalite.pdf';
+
+
 
 export const PreventionPage: React.FC<PreventionPageProps> = ({ onPageChange }) => {
   const { language } = useLanguage();
@@ -732,14 +736,31 @@ chantage: {
                   <Phone className="h-4 w-4" />
                   <span>{language === 'fr' ? 'Contacts d\'urgence' : 'Jokkoo yu caxaan'}</span>
                 </button>
-                <button
-                    onClick={() => onPageChange('emergency')}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <BookOpen className="h-4 w-4" />
-                    <span>{language === 'fr' ? 'Guide complet' : 'Guide complet'}</span>
-                  </button>
-                
+                <div className="space-y-3">
+              <a
+                href={cyberPDF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+              >
+                <BookOpen className="h-4 w-4" />
+                <span>LOI SUR LA CYBERCRIMINALITÉ</span>
+              </a>
+
+              <a
+                href={protectionPDF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+              >
+                <BookOpen className="h-4 w-4" />
+                <span>LOI LES DONNÉES PERSONNELS</span>
+              </a>
+
+            </div>
+
+
+                            
               </div>
             </div>
 
