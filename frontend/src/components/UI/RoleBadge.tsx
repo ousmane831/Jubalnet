@@ -20,6 +20,19 @@ export const RoleBadge: React.FC<RoleBadgeProps> = ({
   size = 'md',
   className = ''
 }) => {
+  // Fonction pour obtenir le nom du département en français
+  const getDepartmentName = (department?: string | null): string => {
+    const departmentNames: { [key: string]: string } = {
+      'cdp': 'CDP',
+      'dsc': 'DSC', 
+      'police': 'Police',
+      'gendarmerie': 'Gendarmerie',
+      'health': 'Santé',
+      'customs_authority': 'Douanes',
+    };
+    return department ? (departmentNames[department] || department.toUpperCase()) : '';
+  };
+
   const getRoleInfo = (role: string) => {
     const roles: { [key: string]: { 
       label: string; 
@@ -122,7 +135,7 @@ export const RoleBadge: React.FC<RoleBadgeProps> = ({
         <IconComponent className={getIconSize()} />
         <span>{roleInfo.label}</span>
         {user.department && (
-          <span className="ml-1 opacity-75">• {user.department.toUpperCase()}</span>
+          <span className="ml-1 opacity-75">• {getDepartmentName(user.department)}</span>
         )}
       </div>
 

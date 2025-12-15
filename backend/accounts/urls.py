@@ -12,4 +12,5 @@ urlpatterns = [
     
     path('users/', views.list_users, name='list_users'),
     path('users/<int:user_id>/update-role/', views.update_user_role, name='update_user_role'),
+    path('users/<int:user_id>/update-department/', views.update_user_department, name='update_user_department'),
 ]

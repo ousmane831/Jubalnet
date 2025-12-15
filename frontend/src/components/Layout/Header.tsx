@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
-import logo from "../../assets/jubbalnet1.png";
+import logo from "../../assets/logo_jubalnet.png";
 import dscLogo from "../../assets/departments/dsc-logo.png";
 import cdpLogo from "../../assets/departments/cdp-logo.png";
 import policeLogo from "../../assets/departments/police-logo.png";

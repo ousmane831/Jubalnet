@@ -33,6 +33,8 @@ class Authority(models.Model):
         ('customs', 'Douanes'),
         ('cybercrime', 'Cybercriminalité'),
         ('anticorruption', 'Anti-corruption'),
+        ('health', 'Ministère de la santé et de l\'hygiène publique'),
+        ('customs_authority', 'Autorité des douanes'),
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)

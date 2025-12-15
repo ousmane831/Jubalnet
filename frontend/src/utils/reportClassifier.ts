@@ -1,6 +1,6 @@
 // Utilitaire de classification des signalements par département
 export interface ReportClassification {
-  department: 'cdp' | 'dsc' | 'police' | 'gendarmerie';
+  department: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'health' | 'customs_authority';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   reason: string;
 }
@@ -97,7 +97,7 @@ export const CATEGORY_DEPARTMENT_MAPPING: Record<string, ReportClassification> =
     priority: 'medium',
     reason: 'Vol et Cambriolage (zone rurale) - compétence Gendarmerie'
   },
-  'violence_rurale': {
+  'violence_rural': {
     department: 'gendarmerie',
     priority: 'urgent',
     reason: 'Violence et Agression (zone rurale) - compétence Gendarmerie'
@@ -106,6 +106,55 @@ export const CATEGORY_DEPARTMENT_MAPPING: Record<string, ReportClassification> =
     department: 'gendarmerie',
     priority: 'high',
     reason: 'Harcèlement physique/moral (zone rurale) - compétence Gendarmerie'
+  },
+
+  // Ministère de la Santé et de l'Hygiène Publique
+  'fraude_pharmaceutique': {
+    department: 'health',
+    priority: 'high',
+    reason: 'Fraude pharmaceutique - compétence Ministère de la Santé'
+  },
+  'fraude pharmaceutique': {
+    department: 'health',
+    priority: 'high',
+    reason: 'Fraude pharmaceutique - compétence Ministère de la Santé'
+  },
+  'trafic_médicaments': {
+    department: 'health',
+    priority: 'high',
+    reason: 'Trafic de médicaments - compétence Ministère de la Santé'
+  },
+  'trafic de médicaments': {
+    department: 'health',
+    priority: 'high',
+    reason: 'Trafic de médicaments - compétence Ministère de la Santé'
+  },
+  'maladie_infectieuse': {
+    department: 'health',
+    priority: 'urgent',
+    reason: 'Maladie infectieuse - compétence Ministère de la Santé'
+  },
+  'maladie infectieuse': {
+    department: 'health',
+    priority: 'urgent',
+    reason: 'Maladie infectieuse - compétence Ministère de la Santé'
+  },
+
+  // Autorité des Douanes
+  'trafic_drogue': {
+    department: 'customs_authority',
+    priority: 'urgent',
+    reason: 'Trafic de drogue - compétence Autorité des Douanes'
+  },
+  'trafic de drogue': {
+    department: 'customs_authority',
+    priority: 'urgent',
+    reason: 'Trafic de drogue - compétence Autorité des Douanes'
+  },
+  'contrefaçon': {
+    department: 'customs_authority',
+    priority: 'high',
+    reason: 'Contrefaçon - compétence Autorité des Douanes'
   }
 };
 
@@ -127,7 +176,9 @@ export class ReportClassifier {
       cdp: '/src/assets/departments/cdp-logo.png',
       dsc: '/src/assets/departments/dsc-logo.png',
       police: '/src/assets/departments/police-logo.png',
-      gendarmerie: '/src/assets/departments/gendarmerie-logo.png'
+      gendarmerie: '/src/assets/departments/gendarmerie-logo.png',
+      health: '/src/assets/departments/health-logo.png',
+      customs_authority: '/src/assets/departments/customs-logo.png'
     };
   }
 
@@ -170,6 +221,29 @@ export class ReportClassifier {
           department: 'dsc',
           priority: 'high',
           reason: 'Mots-clés cybercriminalité détectés dans la description'
+        };
+      }
+      
+      // Mots-clés Santé
+      if (descLower.includes('médicament') || descLower.includes('pharmaceutique') || 
+          descLower.includes('fraude') || descLower.includes('santé') ||
+          descLower.includes('maladie') || descLower.includes('infectieuse') ||
+          descLower.includes('épidémie')) {
+        return {
+          department: 'health',
+          priority: 'high',
+          reason: 'Mots-clés santé/pharmaceutique détectés dans la description'
+        };
+      }
+      
+      // Mots-clés Douanes
+      if (descLower.includes('drogue') || descLower.includes('stupéfiant') || 
+          descLower.includes('contrefaçon') || descLower.includes('faux') ||
+          descLower.includes('trafic') || descLower.includes('douane')) {
+        return {
+          department: 'customs_authority',
+          priority: 'high',
+          reason: 'Mots-clés douane/trafic détectés dans la description'
         };
       }
     }
@@ -311,6 +385,16 @@ export class ReportClassifier {
         name: 'Gendarmerie Nationale',
         description: 'Sécurité en zones rurales',
         color: '#10B981'
+      },
+      health: {
+        name: 'Ministère de la santé et de l\'hygiène publique',
+        description: 'Signalements sanitaires et pharmaceutiques',
+        color: '#DC2626'
+      },
+      customs_authority: {
+        name: 'Autorité des douanes',
+        description: 'Trafic de drogue et contrefaçon',
+        color: '#EA580C'
       }
     };
   }

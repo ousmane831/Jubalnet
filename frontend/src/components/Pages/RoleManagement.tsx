@@ -29,7 +29,7 @@ interface User {
   full_name: string;
   email: string;
   role: string;
-  department?: 'cdp' | 'dsc' | 'police' | 'gendarmerie';
+  department?: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'health' | 'customs_authority' | 'none';
   badge_number?: string;
   jurisdiction_region?: string;
   jurisdiction_department?: string;
@@ -153,23 +153,42 @@ export const RoleManagement: React.FC = () => {
     cdp: users.filter((u) => u.department === "cdp").length,
     police: users.filter((u) => u.department === "police").length,
     gendarmerie: users.filter((u) => u.department === "gendarmerie").length,
+    health: users.filter((u) => u.department === "health").length,
+    customs_authority: users.filter((u) => u.department === "customs_authority").length,
     none: users.filter((u) => !u.department || u.department === "none").length,
   };
 
   const getDepartmentInfo = (department: string) => {
-    // TODO: Implement department info lookup
-    const departmentInfo = {
-      name: department.toUpperCase(),
-      color: '#6366f1'
+    const departmentNames: { [key: string]: string } = {
+      'cdp': 'CDP',
+      'dsc': 'DSC', 
+      'police': 'Police',
+      'gendarmerie': 'Gendarmerie',
+      'health': 'Santé',
+      'customs_authority': 'Douanes',
+      'none': 'Non assigné'
     };
     
+    const departmentColors: { [key: string]: string } = {
+      'cdp': '#8B5CF6',
+      'dsc': '#3B82F6',
+      'police': '#EF4444',
+      'gendarmerie': '#10B981',
+      'health': '#DC2626',
+      'customs_authority': '#EA580C',
+      'none': '#6B7280'
+    };
+    
+    const name = departmentNames[department] || department.toUpperCase();
+    const color = departmentColors[department] || '#6366f1';
+    
     return {
-      label: departmentInfo.name,
-      color: departmentInfo.color,
+      label: name,
+      color: color,
       gradient: `from-indigo-500 to-indigo-600`,
-      icon: department === 'cdp' ? CreditCard : department === 'dsc' ? Monitor : department === 'police' ? Badge : Shield,
-      description: department === 'none' ? 'Non assigné' : `Département ${department.toUpperCase()}`,
-      permissions: department === 'none' ? [] : [`Gérer les cas ${department.toUpperCase()}`]
+      icon: department === 'cdp' ? CreditCard : department === 'dsc' ? Monitor : department === 'police' ? Badge : department === 'health' ? Shield : department === 'customs_authority' ? Shield : Shield,
+      description: department === 'none' ? 'Non assigné' : `Département ${name}`,
+      permissions: department === 'none' ? [] : [`Gérer les cas ${name}`]
     };
   };
 
@@ -425,6 +444,8 @@ export const RoleManagement: React.FC = () => {
               <option value="dsc">DSC</option>
               <option value="police">Police</option>
               <option value="gendarmerie">Gendarmerie</option>
+              <option value="health">{language === "fr" ? "Santé" : "Santé"}</option>
+              <option value="customs_authority">{language === "fr" ? "Douanes" : "Douanes"}</option>
             </select>
           </div>
         </div>
@@ -598,6 +619,8 @@ export const RoleManagement: React.FC = () => {
                               <option value="dsc">DSC</option>
                               <option value="police">Police</option>
                               <option value="gendarmerie">Gendarmerie</option>
+                              <option value="health">{language === "fr" ? "Santé" : "Santé"}</option>
+                              <option value="customs_authority">{language === "fr" ? "Douanes" : "Douanes"}</option>
                             </select>
                           )}
                         </div>

@@ -6,6 +6,10 @@ import dscLogo from '../../assets/departments/dsc-logo.png';
 import cdpLogo from '../../assets/departments/cdp-logo.png';
 import policeLogo from '../../assets/departments/police-logo.png';
 import gendarmerieLogo from '../../assets/departments/gendarmerie-logo.png';
+import santeLogo from '../../assets/departments/sante-logo.png';
+import douaneLogo from '../../assets/departments/douane-logo.png';
+
+
 
 interface UserRoleBadgeProps {
   showPermissions?: boolean;
@@ -26,6 +30,19 @@ export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
 }) => {
   const { user } = useAuth();
 
+  // Fonction pour obtenir le nom du département en français
+  const getDepartmentName = (department?: string | null): string => {
+    const departmentNames: { [key: string]: string } = {
+      'cdp': 'CDP',
+      'dsc': 'DSC', 
+      'police': 'Police',
+      'gendarmerie': 'Gendarmerie',
+      'health': 'Santé',
+      'customs_authority': 'Douanes',
+    };
+    return department ? (departmentNames[department] || department.toUpperCase()) : '';
+  };
+
   // Fonction pour obtenir le logo du département
   const getDepartmentLogo = (department?: string | null): string | undefined => {
     switch (department) {
@@ -33,6 +50,8 @@ export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
       case 'cdp': return cdpLogo;
       case 'police': return policeLogo;
       case 'gendarmerie': return gendarmerieLogo;
+      case 'health': return santeLogo;
+      case 'customs_authority': return douaneLogo;
       default: return undefined;
     }
   };
@@ -106,7 +125,7 @@ export const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
                         className="h-8 w-8 object-contain"
                       />
                     )}
-                    <span className="text-gray-600">{user.department.toUpperCase()}</span>
+                    <span className="text-gray-600">{getDepartmentName(user.department)}</span>
                   </div>
                 </div>
               )}

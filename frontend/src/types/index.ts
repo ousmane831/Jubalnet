@@ -4,7 +4,7 @@ export interface User {
   phone?: string;
   full_name?: string;
   role: 'citizen' | 'authority' | 'admin' | 'moderator';
-  department?: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime';
+  department?: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime' | 'health' | 'customs_authority';
   badge_number?: string;
   jurisdiction_region?: string;
   jurisdiction_department?: string;
@@ -90,7 +90,7 @@ export interface ReportStatus {
 export interface Authority {
   id: string;
   user_id: string;
-  department: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime';
+  department: 'cdp' | 'dsc' | 'police' | 'gendarmerie' | 'justice' | 'customs' | 'cybercrime' | 'health' | 'customs_authority';
   jurisdiction_region?: string;
   jurisdiction_department?: string;
   badge_number?: string;

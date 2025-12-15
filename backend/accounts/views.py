@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login, logout
-from .models import User, EmergencyContact
+from .models import User, EmergencyContact, Authority
 from .serializers import (
     UserRegistrationSerializer, 
     UserLoginSerializer, 
@@ -147,5 +147,50 @@ def update_user_role(request, user_id):
     user.save()
     return Response({
         'message': 'Rôle mis à jour',
+        'user': UserSerializer(user).data
+    })
+
+# Mise à jour du département
+@api_view(['POST'])
+@permission_classes([IsAdminOrAuthority])
+def update_user_department(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'Utilisateur introuvable'}, status=404)
+
+    new_department = request.data.get('department')
+    
+    # Si le département est vide, supprimer l'autorité associée
+    if not new_department or new_department == '':
+        try:
+            authority = user.authority
+            authority.delete()
+        except:
+            pass  # L'utilisateur n'a peut-être pas d'autorité
+        return Response({
+            'message': 'Département supprimé',
+            'user': UserSerializer(user).data
+        })
+    
+    # Vérifier que le département est valide
+    valid_departments = [choice[0] for choice in Authority.DEPARTMENT_CHOICES]
+    if new_department not in valid_departments:
+        return Response({'error': 'Département invalide'}, status=400)
+
+    # Créer ou mettre à jour l'autorité
+    try:
+        authority = user.authority
+        authority.department = new_department
+        authority.save()
+    except:
+        # Créer une nouvelle autorité si elle n'existe pas
+        authority = Authority.objects.create(
+            user=user,
+            department=new_department
+        )
+    
+    return Response({
+        'message': 'Département mis à jour',
         'user': UserSerializer(user).data
     })
